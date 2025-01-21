@@ -1,0 +1,48 @@
+
+- - "c1" #序列
+  - "获取个人信息"  #用例名称
+  - '{"Authorization": "${token}"}'  #请求头
+  - "getInfo"  #请求地址
+  - "P1"   #用例等级
+  - '${token}!=None'     #跳过条件
+  - "get"  #请求方法
+  - "data"  #参数类型
+  - ''   #上传文件
+  - '{}'  #请求参数
+  - '{"get_userName": "$.user.userName","user_info": "$.user"}'  #后置提交参数
+  - ""  #后置执行slq语句
+  #- '{"$..msg":"登录成功", "$..status":200}'  #期望结果  #,"$...username":"$..sql_0_data.mg_name",
+  - '[["操作成功","==","$.msg","str"],[200,"==","$.code","int"],["${username}","==","${get_userName}","str"]]' #断言  [期望，断言类型，实际，数据类型 str,int]
+
+
+
+- - "c2" #序列
+  - "上传头像"  #用例名称
+  - '{"Authorization": "${token}"}'  #请求头
+  - "system/user/profile/avatar"  #请求地址
+  - "P1"   #用例等级
+  - '${token}!=None'     #跳过条件
+  - "post"  #请求方法
+  - "json"  #参数类型
+  - '{"avatarfile":"./config/1.jpg","avatarfile1":"./config/1.jpg"}'   #上传文件
+  - '{}'  #请求参数
+  - '{"imgUrl": "$.imgUrl","get_user_info": "${edit_personal_info(cls.extra_pool)}"}'  #后置提交参数
+  - ""  #后置执行slq语句
+  #- '{"$..msg":"登录成功", "$..status":200}'  #期望结果  #,"$...username":"$..sql_0_data.mg_name",
+  - '[["操作成功","==","$.msg","str"],[200,"==","$.code","int"],["","!=","$.imgUrl","str"]]' #断言  [期望，断言类型，实际，数据类型 str,int]
+
+
+- - "c3" #序列
+  - "更新头像"  #用例名称
+  - '{"Authorization": "${token}"}'  #请求头
+  - "system/user/profile"  #请求地址
+  - "P1"   #用例等级
+  - '${token}!=None'     #跳过条件
+  - "put"  #请求方法
+  - "json"  #参数类型
+  - ''   #上传文件
+  - '${user_info}'  #请求参数
+  - ''  #后置提交参数
+  - ""  #后置执行slq语句
+  #- '{"$..msg":"登录成功", "$..status":200}'  #期望结果  #,"$...username":"$..sql_0_data.mg_name",
+  - '[["操作成功","==","$.msg","str"],[200,"==","$.code","int"]]' #断言  [期望，断言类型，实际，数据类型 str,int]

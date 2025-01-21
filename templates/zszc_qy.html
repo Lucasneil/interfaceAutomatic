@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>接口自动化测试平台</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    {% assets"scss_all" %}
+    <link rel=stylesheet type=text/css href="{{ ASSET_URL }}">
+    {% endassets %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            background: linear-gradient(-45deg, #59E2FD, #6C58EE, #F54595, #224de7, #59E2FD, #6C58EE);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+    <script src="/static/js/RandomCubesBg.js"></script>
+</head>
+
+<body>
+    <!-- Loading 动画 -->
+    <div class="loading-overlay" id="loading">
+        <h1>执行中，请稍等 RUNNING! PLEASE WAIT!</h1>
+        <div class="cubes">
+            <div class="sk-cube sk-cube1"></div>
+            <div class="sk-cube sk-cube2"></div>
+            <div class="sk-cube sk-cube3"></div>
+            <div class="sk-cube sk-cube4"></div>
+            <div class="sk-cube sk-cube5"></div>
+            <div class="sk-cube sk-cube6"></div>
+            <div class="sk-cube sk-cube7"></div>
+            <div class="sk-cube sk-cube8"></div>
+            <div class="sk-cube sk-cube9"></div>
+        </div>
+    </div>
+
+    <div id="app" class="container">
+        <div class="header">接口自动化测试平台</div>
+
+        <form method="POST" action="/submit">
+            <!-- 请选择要执行的项目 -->
+            <div class="form-section">
+                <h2>请选择要执行的项目 :</h2>
+                <div class="radio-group">
+                    <label><input type="radio" name="project" value="产品化-三方" /> <span> 产品化-三方</span></label>
+                    <label><input type="radio" name="project" value="产品化-企采" /> <span> 产品化-企采</span></label>
+                    <label><input type="radio" name="project" value="涿州" /> <span> 涿州</span></label>
+                    <label><input type="radio" name="project" value="金湡" /> <span> 金湡</span></label>
+                </div>
+            </div>
+
+            <!-- 招标人账号 -->
+            <div class="form-section">
+                <div class="info-container">
+                    <div class="info-section">
+                        <h2>招标人信息 :</h2>
+                        <label for="username">招标人账号</label>
+                        <input type="text" id="username" name="username" placeholder="请输入招标人账号" />
+                        <label for="password">招标人密码</label>
+                        <input type="password" id="password" name="password" placeholder="请输入招标人密码" />
+                    </div>
+                    <div class="info-section">
+                        <h2>审批人信息 :</h2>
+                        <label for="firstAprUser">审批人账号</label>
+                        <input type="text" id="firstAprUser" name="firstAprUser" placeholder="请输入一级审批人账号" />
+                        <label for="firstAprPsw">审批人密码</label>
+                        <input type="password" id="firstAprPsw" name="firstAprPsw" placeholder="请输入一级审批人密码" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 招标项选择 -->
+            <div class="form-section">
+                <h2>招标项选择</h2>
+                <label for="bid-type">招标方式 :</label>
+                <select id="bid-type" name="bid-type" onchange="updateOptions()">
+                    <option value="0">请选择招标方式</option>
+                    <option value="公开招标">公开招标</option>
+                    <option value="邀请招标">邀请招标</option>
+                    <option value="竞争性谈判">竞争性谈判</option>
+                    <option value="竞争性磋商">竞争性磋商</option>
+                    <option value="单一来源采购">单一来源采购</option>
+                    <option value="询价采购">询价采购</option>
+                    <option value="其他">其他</option>
+                </select>
+                <label for="inviteType">邀请方式 :</label>
+                <select id="inviteType" name="inviteType">
+                    <option name="0">请选择邀请方式</option>
+
+
+                </select>
+                <label for="purchaseProjectType">采购项目类型 :</label>
+                <select id="purchaseProjectType" name="purchaseProjectType">
+                    <option value="货物">货物</option>
+                    <option value="服务">服务</option>
+                    <option value="工程">工程</option>
+                </select>
+
+
+                <label for="bid-organization">招标组织形式 :</label>
+                <select id="bid-organization" name="bid-organization">
+                    <option value="自行招标">自行招标</option>
+                    <option value="委托招标">委托招标</option>
+                </select>
+
+                <label for="pqrMode">资审方式 :</label>
+                <select id="pqrMode" name="pqrMode">
+                    <option value="资格后审">资格后审</option>
+                    <option value="资格预审">资格预审</option>
+
+                </select>
+            </div>
+
+            <!-- 评标办法 -->
+            <div class="form-section">
+                <h2>招标文件选项</h2>
+                <label>基本信息（点击选择） :</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="checkbox" name="ifSupportSmallMicro"  value="0" onclick='handleClick(this);'/>
+                        <span> 小微</span>
+                    </label>
+                    <label><input type="checkbox" name="ifSyndicatedFlag" value="0" onclick='handleClick(this);' /> <span> 联合体</span></label>
+                    <label><input type="checkbox" name="ifSupportBlindBid" value="0" onclick='handleClick(this);' /> <span> 暗标</span></label>
+                    <label><input type="checkbox" name="ifJudgesConfirmWinBidder" value="0" onclick='handleClick(this);' /> <span> 评定分离</span></label>
+                    <label><input type="checkbox" name="ifUseCa" value="0" onclick='handleClick(this);' /> <span> 是否CA</span></label>
+                    <label><input type="checkbox" name="ifFee" value="0" onclick='handleClick(this);' /> <span> 是否费用</span></label>
+
+                </div>
+
+
+                <label for="evaluation-method">评标办法 :</label>
+                <select id="evaluation-method" name="evaluation-method">
+                    <option value="最低评标价法">最低评标价法</option>
+                    <option value="综合评标法">综合评标法</option>
+                </select>
+                
+            </div>
+
+            <!-- 提交按钮 -->
+            <button type="button" class="submit-button" id="submit-btn" v-on:click="submitForm">
+                提交
+            </button>
+        </form>
+    </div>
+    <script>
+
+        const app = Vue.createApp({
+            methods: {
+                submitForm() {
+                    // 获取表单元素
+                    //所属项目
+                    const projectChoice = document.querySelector(
+                        'input[name="project"]:checked'
+                    );
+                    //招标人用户名
+                    const username = document.getElementById("username").value.trim();
+                    //招标人密码
+                    const password = document.getElementById("password").value.trim();
+                    //审批人用户名
+                    const firstAprUser = document.getElementById("firstAprUser").value.trim();
+                    //审批人密码
+                    const firstAprPsw = document.getElementById("firstAprPsw").value.trim();
+                    console.log(username, password, firstAprUser, firstAprPsw);
+
+                    //招标方式
+                    const bidType = document.getElementById("bid-type").value;
+                    //邀请类型
+                    const inviteType = document.getElementById("inviteType").value;
+                    //采购项目类型
+                    const purchaseProjectType = document.getElementById("purchaseProjectType").value;
+                    //招标组织形式
+                    const bidOrganization =
+                        document.getElementById("bid-organization").value;
+                    //评标办法
+                    const evaluationMethod =
+                        document.getElementById("evaluation-method").value;
+                    //资审方式
+                    const pqrMode = document.getElementById("pqrMode").value;
+                    //是否小微
+                    const ifSupportSmallMicro = document.querySelector('input[name="ifSupportSmallMicro"]').value;
+                    console.log("是否支持小微的结果是"+ ifSupportSmallMicro);
+                    //是否联合体
+                    const ifSyndicatedFlag = document.querySelector('input[name="ifSyndicatedFlag"]').value;
+                    console.log("是否联合体的结果是" + ifSyndicatedFlag);
+                    //是否暗标
+                    const ifSupportBlindBid = document.querySelector('input[name="ifSupportBlindBid"]').value;
+                    console.log("是否暗标的结果是" + ifSupportBlindBid);
+                    //是否评定分离
+                    const ifJudgesConfirmWinBidder = document.querySelector('input[name="ifJudgesConfirmWinBidder"]').value;
+                    console.log("是否评定分离的结果是" + ifJudgesConfirmWinBidder);
+                    const ifUseCa = document.querySelector('input[name="ifUseCa"]').value;
+                    console.log("是否使用CA的结果是" + ifUseCa);
+                    const ifFee = document.querySelector('input[name="ifFee"]').value;
+                    console.log("是否费用的结果是" + ifFee);
+
+
+                    // 校验输入
+
+                    if (!projectChoice) {
+                        alert("请选择要执行的项目");
+                        return;
+                    }
+                    if (!username) {
+                        alert("请输入招标人账号");
+                        return;
+                    }
+                    if (!password) {
+                        alert("请输入招标人密码");
+                        return;
+                    }
+                    if (!bidType || bidType === "0") {
+                        alert("请选择招标方式");
+                        return;
+                    }
+                    // 显示 loading 动画
+                    document.getElementById("loading").style.display = "flex";
+                    // 组装数据
+                    const formData = new FormData();
+                    formData.append("projectChoice", projectChoice.value);
+                    formData.append("username", username);
+                    formData.append("password", password);
+                    formData.append("bidType", bidType);
+                    formData.append("inviteType", inviteType);
+                    formData.append("bidOrganization", bidOrganization);
+                    formData.append("evaluationMethod", evaluationMethod);
+                    formData.append("pqrMode", pqrMode);
+                    formData.append("ifSupportSmallMicro", ifSupportSmallMicro);
+                    formData.append("ifSyndicatedFlag", ifSyndicatedFlag);
+                    formData.append("ifSupportBlindBid", ifSupportBlindBid);
+                    formData.append("ifJudgesConfirmWinBidder", ifJudgesConfirmWinBidder);
+                    formData.append("purchaseProjectType", purchaseProjectType);
+                    formData.append("firstAprUser", firstAprUser);
+                    formData.append("firstAprPsw", firstAprPsw);
+                    formData.append("ifUseCa", firstAprPsw);
+                    formData.append("ifFee", ifFee);
+
+
+                    // 发送数据到后端
+                    fetch("/submit", {
+                        method: "POST",
+                        body: formData,
+                    })
+                        .then((response) => {
+                            if (!response.ok || response.status >= 400) {
+                                return response
+                                    .text()
+                                    .then((text) => Promise.reject(new Error(text)));
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                            // 开始轮询任务状态
+                            const taskId = data.task_id;
+                            const intervalId = setInterval(() => {
+                                fetch(`/status/${taskId}`)
+                                    .then((response) => response.json())
+                                    .then((statusData) => {
+                                        if (statusData.status === "completed") {
+                                            clearInterval(intervalId);
+                                            // 隐藏 loading
+                                            document.getElementById("loading").style.display =
+                                                "none";
+                                            // 显示后端返回数据
+                                            alert("提交成功！服务器返回：" + statusData.result);
+                                            console.log("后端响应数据：", statusData.result);
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        clearInterval(intervalId);
+                                        // 隐藏 loading
+                                        document.getElementById("loading").style.display = "none";
+                                        console.error("请求错误：", error);
+                                        alert("提交失败：" + error.message);
+                                    });
+                            }, 2000); // 每2秒轮询一次
+                        })
+                        .catch((error) => {
+                            // 隐藏 loading
+                            document.getElementById("loading").style.display = "none";
+                            console.error("请求错误：", error);
+                            alert("提交失败：" + error.message);
+                        });
+                },
+
+
+
+            },
+        });
+        function updateOptions() {
+            //获取选择的招标方式
+            var bidType = document.getElementById("bid-type").value;
+            console.log(bidType)
+            //获取邀请类型
+            //var inviteType = document.getElementById("inviteType").value;
+            console.log(inviteType)
+            // 清空第二个下拉框的选项
+            inviteType.innerHTML = "";
+            console.log("clear success")
+            //根据招标方式联动邀请方式
+            if (bidType === "邀请招标") {
+                document.getElementById("inviteType").innerHTML = "<option value='邀请'>邀请</option>"
+                //inviteType.add(new Option("邀请"))
+                console.log(inviteType)
+
+            }
+            else {
+                document.getElementById("inviteType").innerHTML = "<option value='公开'>公开</option><option value='邀请'>邀请</option>"
+
+            }
+
+        }
+        function handleClick(cb) {
+                cb.value = cb.checked ? 1 : 0;
+                console.log(cb.value);
+        }
+
+        app.mount("#app");
+
+        // 页面加载完成后隐藏 loading 动画
+        window.addEventListener("load", () => {
+            document.getElementById("loading").style.display = "none";
+        });
+    </script>
+</body>
+
+</html>

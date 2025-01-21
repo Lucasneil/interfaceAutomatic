@@ -1,0 +1,226 @@
+/* 通用设置 */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+/* 标题样式 */
+.header {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #2575fc;
+  margin-bottom: 20px;
+}
+
+/* 表单标题样式 */
+.form-section h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #555;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+}
+
+/* 表单元素样式 */
+input,
+select,
+button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus {
+  border-color: #2575fc;
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+}
+.form-section .info-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-section .info-section {
+  width: 48%;
+}
+
+.form-section .info-section h2 {
+  font-size: 18px;
+  color: #444;
+  margin-bottom: 10px;
+  border-left: 4px solid #2575fc;
+  padding-left: 10px;
+}
+
+.form-section .info-section label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-section .info-section input[type="text"],
+.form-section .info-section input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 提交按钮样式 */
+.submit-button {
+  background-color: #2575fc;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #0056d2;
+}
+
+/* 加强单选按钮样式 */
+.radio-group label {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  padding: 5px 15px;
+  border: 2px solid #ddd;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  margin-right: 10px;
+}
+
+.radio-group label:hover {
+  border-color: #2575fc;
+}
+
+.radio-group label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-group label input:checked+span {
+  color: #fff;
+  background-color: #2575fc;
+  border-color: #2575fc;
+}
+
+.radio-group label span {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+.checkbox-group label {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  padding: 5px 15px;
+  border: 2px solid #ddd;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  margin-right: 10px;
+}
+
+.checkbox-group label:hover {
+  border-color: #2575fc;
+}
+
+.checkbox-group label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox-group label input:checked+span {
+  color: #fff;
+  background-color: #2575fc;
+  border-color: #2575fc;
+}
+
+.checkbox-group label span {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+/* 下拉菜单样式 */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24'%3E%3Cpath fill='%23999' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 12px;
+}
+/* Loading 动画样式 */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.loading-overlay h1 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #2575fc;
+}
+
+.cubes div {
+  width: 15px;
+  height: 15px;
+  background-color: #2575fc;
+  margin: 5px;
+  animation: cubeMove 1.2s infinite ease-in-out;
+}
+
+@keyframes cubeMove {
+
+  0%,
+  70%,
+  100% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(0);
+  }
+}
