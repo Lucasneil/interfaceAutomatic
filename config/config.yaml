@@ -60,9 +60,9 @@ extra_pool:
   _TOTAL: '23'
   audittoken: $.data.access_token
   audittoken1: eyJ4NXQjUzI1NiI6Im02OXFnMnMxeE1NQkFuRFBtLTRyYkZSanNpRWxJSkVSOVRRbTVfT256RmMiLCJraWQiOiJiaWRkaW5nIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxODUzMjUxMDQ5MzU2NDQ3NzQ0IiwiYXVkIjoiNWRkZmE2ODJkZWQyZWVjOWI1MGI4OTE5YzhmYTRjNDQiLCJuYmYiOjE3MzMxMjc0NTksImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo5MDAwIiwiZXhwIjoxNzMzMTM0NjU5LCJpYXQiOjE3MzMxMjc0NTksImp0aSI6IjA0NzQwNDYwNDE3MjRjM2JiZWExZWM4MmZhZDczNjJjIn0.YPkLfZiCRt4DTLsfh3zg1iKtWvrGB4c5kbnJrwK9a-3ivjVhoaLin9sTrBG3R36pTS58my4NAIe8zDuQUV3-UO8vsKVNxcsK90721RuDBNas2sNhDK5Nb0zvqB2HX-epFN-6EFJLJlXfwsu8Yh8QPG55hMZnzH_5LJ3anPypYdgqMfNIkB45e4XTD4b1M7oxVYkVlBLy1h4hYD6U-4pmCrQ3LUVx6_FgeojZH5Wn6Rtno8yVJnE2ZGj9QVlRT63IOJApICDXXn-Or2TfMBibROrli454hKp9kfmoYPqbgeMSh5TjoXdq2ShBYZb-D4kKtGatH6ZgNQ37dRlkGx8t2w
-  bidDocReferEndTime: '2025-02-11 10:46:37'
-  bidDocReferEndTimeCus: '2025-02-11 10:46:37'
-  bidOpenTime: '2025-02-11 10:46:37'
+  bidDocReferEndTime: '2025-02-11 14:12:42'
+  bidDocReferEndTimeCus: '2025-02-11 14:12:42'
+  bidOpenTime: '2025-02-11 14:12:42'
   bidSectionCode: $.data.list[0].bidSectionCode
   bidSectionId: $.data.list[0].id
   bidSectionName: $.data.list[0].bidSectionName
@@ -70,8 +70,8 @@ extra_pool:
   bidSectionName2: 测试接口自动化项目2025-01-21 16:31:29-标段02
   bulletinId: $.data.[0].bulletinId
   catalogId: $.data.[0].id
-  docGetEndTime: '2025-02-11 10:46:37'
-  docGetEndTimeCus: '2025-02-11 10:46:37'
+  docGetEndTime: '2025-02-11 14:12:42'
+  docGetEndTimeCus: '2025-02-11 14:12:42'
   env: test
   evaluation_method: '1'
   feeCash: ''
@@ -79,7 +79,7 @@ extra_pool:
   feeGuarantee: ''
   fileId: $.data.id
   fileNum: 0
-  firstAprPsw: eVsAuThaNVQTDnk8zSNsKpvndRTyNYEHfNoRXfY9Xy3hzCDg5px7yW08/846y5atKuJV/vfPairYNLfgk_yhCFFdYCyCvQMBBhPDFMZGcVHi2aLumjXMqV/dCsDaniKCWLhT86SuQmpkOktkPXHSb/a1i7dSRLAum_hAgHJykyc=
+  firstAprPsw: bFUe_j908ZRelY1zFb92qL5FLpmG0GIP6lJH5YylZhaHuGveNLiYZhlYQ5B4k6f4qMaZctiafb4snB1gboOq5rjdYh/8qyAcQaZEFTO2Db9mQjMSU9zioVoumRjVw14VcRas6I8CT7T2lkWHQph2AjxFtT4p9/U8Mg3LcD6LKfo=
   firstAprUser: trade-audit
   guaranteeType: ''
   ifFee: ''
@@ -89,19 +89,19 @@ extra_pool:
   ifSyndicatedFlag: 'false'
   ifUseCa: 'false'
   inviteLetter: $.data.[0].id
-  inviteType: '1'
+  inviteType: '2'
   itemid: '1855903699903414273'
   marginPrice: '0'
   marginUnit: '0'
   noticeContentId: $.data[0].tempFileId
-  noticeEndTime: '2025-02-11 10:46:37'
-  noticeSendTime: '2025-01-22 10:51:37'
-  password: YQPBThE4Gh5WmbmyRY5Y_VWU6KVi_4WOblGcw5UI3n2zL8IQ9y9ZydJdDY52Z4xTpKRlLbX0CIQSUmt/B/NEGwPd3vgXJwpNRGFqxHA7W9u5IGpQvFMhjhstuft/31J6KXpvKLeCl6OHtdm17rTu45tpqrwgtC0arAiggaHgt30=
+  noticeEndTime: '2025-02-11 14:12:42'
+  noticeSendTime: '2025-01-22 14:17:42'
+  password: VsdXHdQqGGSHG9NTmc6ELw8LDIHss1lnqsJmwNF0lishLlKxPM5UC1T1IEUYgBaJj1RlQXyFXA0QD7chv5o9FDX6uCnmvQ3gizrJi4h4/A4SRR5LOkYyQRcbS4lsgsvzWxbiLqslm2oe_NqTAUfIrVkFPSShwn3CeUfnwQJIl7A=
   pqrMode: '2'
-  purchaseMode: '1'
+  purchaseMode: '2'
   purchaseProjectCode: $.data.list[0].purchaseProjectCode
-  purchaseProjectName: 测试接口自动化项目2025-01-22 10:46:37
-  purchaseProjectNameDecode: '%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A1%B9%E7%9B%AE2025-01-22%2010%3A46%3A37'
+  purchaseProjectName: 测试接口自动化项目2025-01-22 14:12:42
+  purchaseProjectNameDecode: '%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A1%B9%E7%9B%AE2025-01-22%2014%3A12%3A42'
   purchaseProjectType: D01
   purchase_project_code: E1306005456000071001
   tenderOrganizeForm: '1'

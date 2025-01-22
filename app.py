@@ -276,6 +276,9 @@ def change_conf(data):
         print(yaml_data['server']['case_severity'])
 
 
+
+
+
         # 将替换完的字典写入yaml配置文件
     with open(yaml_file_path, 'w', encoding='utf-8') as f:
         yaml.dump(yaml_data, f,allow_unicode=True)
@@ -313,7 +316,7 @@ def test_submit():
     task_status[task_id] = {'status': 'processing', 'log': ''}
     # 启动后台线程处理任务
     threading.Thread(target=process_task, args=(task_id,data)).start()
-    print("操作excel")
+    #print("操作excel")
 
     return jsonify({'task_id': task_id})
 

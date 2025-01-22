@@ -4,23 +4,30 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font  # 导入字体模块
 import openpyxl, string
 from common.logger import Logger
+from common.config_loader import ConfigLoader
 
 
 class operation_excle:
 
     @classmethod
-    def read_excel(cls, file_name, case_severity_list):
+    def read_excel(cls, file_name, case_severity_list,inviteType):
+        
 
         wb = openpyxl.load_workbook(file_name)
         # ws = wb.active#打开当前页
         sheet_names = wb.sheetnames  # 得到工作簿的所有工作表名 结果： ['Sheet1', 'Sheet2', 'Sheet3']
         rows_list = []
-        for title in sheet_names:
+        if inviteType == '1':
+            title = "公开"
             ws = wb[title]  # 打开指定页
+        else:
+            title = "邀请"
+            ws = wb[title]  # 打开指定页
+            
             # 取出每行的值，以list方式存放
 
             # rows_list=[[],[],[]]
-            for row in ws.rows:
+        for row in ws.rows:
                 row_list = []
                 for cell in row:
                     if cell.value == None:

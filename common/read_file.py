@@ -71,8 +71,8 @@ class ReadFile:
         case_severity_list=ReadFile.read_config('$..case_severity')#获取测试用例级别
 
         excle_path = (cls.read_config("$.file_path.test_case"))#获取测试用例路径
-        operation_excle_data=operation_excle.read_excel(excle_path, case_severity_list=case_severity_list, )  # 返回测试数据列表
-
+        operation_excle_data=operation_excle.read_excel(excle_path, ['P1'] )  # 返回测试数据列表
+        print("开始调用readFile里的operation_excle_data")
         return operation_excle_data
 
     @classmethod

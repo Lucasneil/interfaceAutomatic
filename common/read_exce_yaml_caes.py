@@ -36,8 +36,11 @@ def get_excle_all_caes(excle_file):  # 获取excle文件中的所有用例
     for one_excle_path in excle_path_all:
         print(one_excle_path, "路径")
         try:
-            one_excle_case = operation_excle.read_excel(one_excle_path,
-                                                        ReadFile.read_config('$..case_severity'))
+            print("开始调用read——excel里的operation")
+            inviteType = ReadFile.read_config('$..inviteType')
+            print("read-excel里读取到的inviteType")
+            print(inviteType)
+            one_excle_case = operation_excle.read_excel(one_excle_path,['P1'],inviteType)
         except Exception as e:
             Logger.warning('这个文件【%s】无法读取,原因:“%s”,关闭excle再试试…… ' % (one_excle_path, e))
             one_excle_case = []
@@ -50,7 +53,7 @@ def get_yaml_excle_caes(cmdopt_env='test'):  # get_all_yaml_excle_caes  #获取y
     # cmdopt_env='test'
     # Logger.error(cmdopt_env)
     test_case_type = (ReadFile.read_config('$.test_case_type.%s' % cmdopt_env))
-    print(test_case_type)
+    #print(test_case_type)
     # test_case_type = (ReadFile.read_config('$.test_case_type' ))
 
     test_case_type = sorted(test_case_type, key=lambda test_case_type: test_case_type['order'], reverse=False)
