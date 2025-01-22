@@ -6,6 +6,9 @@ import os
 import yaml
 from pathlib import Path
 
+from common.read_file import ReadFile
+
+
 class AssertApi():
     re_sql_data={}
 
@@ -30,6 +33,7 @@ class AssertApi():
         ExchangeData.extra_pool_allure()  # 显示参数池数
         Logger.info('提取参数路径：%s' % extra)
         Logger.info('参数池：%s' % ExchangeData.extra_pool)
+        ReadFile.write_config(ExchangeData.extra_pool)
         Logger.info('断言内容：%s' % expectlist)
         if expectlist != "" and expectlist != "{}":
 

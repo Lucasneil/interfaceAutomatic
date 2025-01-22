@@ -11,9 +11,9 @@ from common.ws_request import websocket_run
 
 
 class Api_Request():
-    extra_pool = ReadFile.read_config('$.extra_pool')
-    change_variables_instance = ChangeVariables()
-    change_variables_instance.change_name_times(extra_pool)
+    '''def update_name_times(extra_pool):
+        change_variables_instance = ChangeVariables()
+        change_variables_instance.change_name_times(extra_pool)'''
 
     @classmethod
     def api_data(cls, cases, env_url):
@@ -51,6 +51,8 @@ class Api_Request():
         request_headers = str(ReadFile.read_config('$.request_headers'))  # 获取配置文件中的请求头
         request_parameters = str(ReadFile.read_config('$.request_parameters'))  # 获取配置文件中的请求参数
         extra_pool = ReadFile.read_config('$.extra_pool')
+        #cls.update_name_times(extra_pool)
+        
         # 将缓存参数池中的数据写入配置文件的参数池中
         #change_variables_instance = ChangeVariables()
         #change_variables_instance.change_name_times(extra_pool)

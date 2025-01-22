@@ -65,6 +65,16 @@
                     <label><input type="radio" name="project" value="金湡" /> <span> 金湡</span></label>
                 </div>
             </div>
+            <!-- 选择项目类型 -->
+            <div class="form-section">
+                <h2>请选择项目类型 :</h2>
+                <div class="radio-group">
+                    <label><input type="radio" name="project" value="企业采购" /> <span> 企业采购</span></label>
+                    <label><input type="radio" name="project" value="政府采购" /> <span> 政府采购</span></label>
+                    <label><input type="radio" name="project" value="工程建设" /> <span> 工程建设</span></label>
+                    
+                </div>
+            </div>
 
             <!-- 招标人账号 -->
             <div class="form-section">
@@ -103,8 +113,7 @@
                 <label for="inviteType">邀请方式 :</label>
                 <select id="inviteType" name="inviteType">
                     <option name="0">请选择邀请方式</option>
-
-
+                
                 </select>
                 <label for="purchaseProjectType">采购项目类型 :</label>
                 <select id="purchaseProjectType" name="purchaseProjectType">
@@ -160,6 +169,7 @@
             </button>
         </form>
     </div>
+    
     <script>
 
         const app = Vue.createApp({
@@ -184,6 +194,8 @@
                     const bidType = document.getElementById("bid-type").value;
                     //邀请类型
                     const inviteType = document.getElementById("inviteType").value;
+                    console.log("1是公开2是邀请" + inviteType)
+                    
                     //采购项目类型
                     const purchaseProjectType = document.getElementById("purchaseProjectType").value;
                     //招标组织形式
@@ -307,9 +319,9 @@
         function updateOptions() {
             //获取选择的招标方式
             var bidType = document.getElementById("bid-type").value;
-            console.log(bidType)
+            var inviteType = document.getElementById("inviteType");
             //获取邀请类型
-            //var inviteType = document.getElementById("inviteType").value;
+            var inviteType = document.getElementById("inviteType").value;
             console.log(inviteType)
             // 清空第二个下拉框的选项
             inviteType.innerHTML = "";
@@ -318,12 +330,11 @@
             if (bidType === "邀请招标") {
                 document.getElementById("inviteType").innerHTML = "<option value='邀请'>邀请</option>"
                 //inviteType.add(new Option("邀请"))
-                console.log(inviteType)
 
             }
             else {
                 document.getElementById("inviteType").innerHTML = "<option value='公开'>公开</option><option value='邀请'>邀请</option>"
-
+                //selectCompanyBtn.style.display = 'none';               
             }
 
         }

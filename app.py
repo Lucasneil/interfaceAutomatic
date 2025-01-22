@@ -9,6 +9,8 @@ import yaml
 import os
 import run
 from common.exchange_data import ExchangeData
+from common.read_file import ReadFile
+from common.public import ChangeVariables
 
 
 app = Flask(__name__,template_folder='templates',static_folder='static',static_url_path='/static')
@@ -108,26 +110,26 @@ def change_conf(data):
         print(ifSupportSmallMicro)
         
     ifJudgesConfirmWinBidder = data.get('ifJudgesConfirmWinBidder')
-    print("app里的小微")
+    print("是否评定分离")
     print(ifJudgesConfirmWinBidder)
     if ifJudgesConfirmWinBidder == '1':
         ifJudgesConfirmWinBidder = "true"
-        print("app里的小微")
+        print("是否评定分离")
         print(ifJudgesConfirmWinBidder)
     else:
         ifJudgesConfirmWinBidder = "false"
-        print("app里的小微")
+        print("是否评定分离")
         print(ifJudgesConfirmWinBidder)
     ifSupportBlindBid = data.get('ifSupportBlindBid')
-    print("app里的小微")
+    print("是否暗标")
     print(ifSupportBlindBid)
     if ifSupportBlindBid == '1':
         ifSupportBlindBid = "true"
-        print("app里的小微")
+        print("是否暗标")
         print(ifSupportBlindBid)
     else:
         ifSupportBlindBid = "false"
-        print("app里的小微")
+        print("是否暗标")
         print(ifSupportBlindBid)
     ifSyndicatedFlag = data.get('ifSyndicatedFlag')
     print("app里的小微")
@@ -143,11 +145,11 @@ def change_conf(data):
     ifUseCa = data.get('ifUseCa')
     if  ifUseCa == '1':
         ifUseCa = "true"
-        print("app里的小微")
+        print("是否使用CA")
         print(ifUseCa)
     else:
         ifUseCa = "false"
-        print("app里的小微")
+        print("是否使用CA")
         print(ifUseCa)
     '''if  ifFee == '1':
         
@@ -167,6 +169,7 @@ def change_conf(data):
         '''
     #根据页面传入的【是否费用】的值来确定传参
     if ifFee == '1':
+        print("有费用")
         ifFee = "1,2,3"
         guaranteeType = "1,2,3"
         marginPrice = "1"
@@ -230,6 +233,8 @@ def change_conf(data):
     tenderOrganizeForm = tenderOrganizeForm_mapping.get(tenderOrganizeForm)
     evaluation_method = evaluation_method_mapping.get(evaluation_method)
     inviteType = inviteType_mapping.get(inviteType)
+    print("邀请类型1是公开2是邀请")
+    print(inviteType)
     purchaseProjectType = purchaseProjectType_mapping.get(purchaseProjectType)
     # print(inviteType + "inviteType")
     # 读取yaml配置文件为字典
@@ -266,9 +271,11 @@ def change_conf(data):
         yaml_data['extra_pool']['marginPrice'] = marginPrice
         yaml_data['extra_pool']['marginUnit'] = marginUnit
         yaml_data['extra_pool']['tfPrice'] = tfPrice
+        change_variables_instance = ChangeVariables()
+        change_variables_instance.change_name_times(yaml_data['extra_pool'])
+        print(yaml_data['server']['case_severity'])
 
-        
-        
+
         # 将替换完的字典写入yaml配置文件
     with open(yaml_file_path, 'w', encoding='utf-8') as f:
         yaml.dump(yaml_data, f,allow_unicode=True)
@@ -278,6 +285,8 @@ def change_conf(data):
 def process_task(task_id,data):
     change_conf(data)
     ExchangeData.load_config()
+    ReadFile.get_config_dict()
+
 
     f = io.StringIO()
     output = f.getvalue()
@@ -304,6 +313,7 @@ def test_submit():
     task_status[task_id] = {'status': 'processing', 'log': ''}
     # 启动后台线程处理任务
     threading.Thread(target=process_task, args=(task_id,data)).start()
+    print("操作excel")
 
     return jsonify({'task_id': task_id})
 

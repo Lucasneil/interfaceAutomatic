@@ -30,6 +30,7 @@ class ExchangeData:
         yaml_file_path = f"{str(Path(__file__).parent.parent)}/config/config.yaml"
 
         config_data = cls.read_config_file(yaml_file_path)
+        print("通过exchangeData读取到的配置是")
         print(config_data)
         extra_pool_yaml = config_data['extra_pool']
 
@@ -149,7 +150,6 @@ class ExchangeData:
         cls.extra_pool.update(result_data_test)
         cls.extra_pool.update({"PROJECT_NAME": ReadFile.read_config("$.project_name")})
         Logger.info(cls.extra_pool)
-        ReadFile.write_config(cls.extra_pool)
 
     @classmethod
     def get_pytest_summary(cls):  # 读取report.html模板，替换变量后，返回完整的html 作为发送邮件内容
