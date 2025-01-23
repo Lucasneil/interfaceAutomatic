@@ -1,4 +1,7 @@
 from flask import Flask, request, jsonify, render_template
+import logging
+import pytest
+import allure
 from flask_assets import Environment, Bundle
 from flask_socketio import SocketIO, emit, join_room
 from contextlib import redirect_stdout
@@ -14,12 +17,15 @@ from common.public import ChangeVariables
 
 
 app = Flask(__name__,template_folder='templates',static_folder='static',static_url_path='/static')
-
+# 配置 logging 模块
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 assets = Environment(app)
 
 # 初始化Flask-Assets
 assets.url = app.static_url_path
 assets.directory = app.static_folder
+
 
 
 # 编译并注册scss_all bundle
@@ -35,6 +41,7 @@ yaml.allow_unicode = True
 
 # 存储任务状态
 task_status = {}
+
 
 @app.route('/')
 def test_index():
@@ -96,6 +103,11 @@ def change_conf(data):
         case_dir = './data/env_test/case_excle/qc'
     elif projectChoice == '金湡':
         case_dir = './data/env_test/case_excle/zz'
+    elif projectChoice == '清苑':
+        case_dir = './data/env_test/case_excle/zz'
+    elif projectChoice == '无极':
+        case_dir = './data/env_test/case_excle/zz'
+
     #根据传入的招标文件信息做后续处理，根据传入的值进行相应转换
     ifSupportSmallMicro = data.get('ifSupportSmallMicro')
     print("app里的小微")
@@ -188,7 +200,10 @@ def change_conf(data):
         '产品化-三方': 'hhttp://trade.sanfang-test.zszc.jianshicha.cn/etbApi/',
         '涿州': 'http://trade.zz-test.zszc.jianshicha.cn/etbApi/',
         '产品化-企采': 'http://trade.sd-test.zszc.jianshicha.cn/api/',
-        '金湡': 'http://trade.jy-test.zszc.jianshicha.cn/etbApi/'
+        '金湡': 'http://trade.jy-test.zszc.jianshicha.cn/etbApi/',
+        '清苑': 'http://trade.qy-test.zszc.jianshicha.cn/etbApi/',
+        '无极': 'http://trade.wj-test.zszc.jianshicha.cn/etbApi/'
+
     }
     # 招标方式字典
     purchaseMode_mapping = {
@@ -296,6 +311,7 @@ def process_task(task_id,data):
     with redirect_stdout(f):
         result = run.run()
         #print(result)
+        logger.debug(result)
 
     # 更新任务状态
     task_status[task_id] = {
@@ -324,11 +340,13 @@ def test_submit():
 def get_status(task_id):
     status = task_status.get(task_id, {'status': 'unknown'})
     return jsonify(status)
+    pass
 
 @socketio.on('join')
 def on_join(data):
     task_id = data['task_id']
     join_room(task_id)
+    pass
 
 
 if __name__ == '__main__':

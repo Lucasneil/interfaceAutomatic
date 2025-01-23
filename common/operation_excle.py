@@ -1,3 +1,5 @@
+import logging
+
 from openpyxl.styles import Alignment
 from openpyxl.styles import Border, Side
 from openpyxl.utils import get_column_letter
@@ -17,12 +19,21 @@ class operation_excle:
         # ws = wb.active#打开当前页
         sheet_names = wb.sheetnames  # 得到工作簿的所有工作表名 结果： ['Sheet1', 'Sheet2', 'Sheet3']
         rows_list = []
+        logging.debug("开始操作excel！！！！！！！")
+        logging.debug(sheet_names)
+        logging.debug(inviteType)
         if inviteType == '1':
             title = "公开"
             ws = wb[title]  # 打开指定页
+            logging.debug("打开的是公开sheet")
+            print("打开的是公开sheet")
         else:
             title = "邀请"
             ws = wb[title]  # 打开指定页
+            logging.debug("打开的是邀请sheet")
+            print("打开的是邀请sheet")
+
+
             
             # 取出每行的值，以list方式存放
 
@@ -54,8 +65,10 @@ class operation_excle:
             result.append(row_dict)
 
         # return result#返回字典形式
-
+        logging.debug("rows_list的值是")
+        logging.debug(rows_list)
         return rows_list  # 返回列表形式
+
 
     def str_count_to_width(self, str):
         '''找出字符串中的中英文、空格、数字、标点符号个数'''
