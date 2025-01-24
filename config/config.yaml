@@ -48,7 +48,7 @@ email:
   title: 接口自动化测试报告(见附件)
   user: huoyan_hyh@163.com
 extra_pool:
-  Aprtoken: eyJ4NXQjUzI1NiI6Im02OXFnMnMxeE1NQkFuRFBtLTRyYkZSanNpRWxJSkVSOVRRbTVfT256RmMiLCJraWQiOiJiaWRkaW5nIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxODUzMzQ0NjU1MzY2ODY4OTkyIiwiYXVkIjoiNWRkZmE2ODJkZWQyZWVjOWI1MGI4OTE5YzhmYTRjNDQiLCJuYmYiOjE3Mzc2MDE0MzQsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo5MDAwIiwiZXhwIjoxNzM3NjA4NjM0LCJpYXQiOjE3Mzc2MDE0MzQsImp0aSI6ImNkZGJkZTcwNjliMzRlN2M4Yzc2MmQzNDM5YTA1ZmNmIn0.PCHRvZ50i1M_x4mWRYDSCPv1ZjETD-5CxNe2Yc-SQucRyl5wBsEKLt44bejfO3oQ09dO8yAn2pgi5PrNUHFHpF_Vj_Zpp9kuhiN138yoepomChjUrpM5kRfkGu6yG7LTWq7pq3Z9wTr5dUrLC5nmrQNcwJAcTfbsF7tieDrfnE-p5Yxtl3meFMnz4-4qnVvzGJKC6C4SWRDnZQyFHmaSFk6cgUBAuSDTUgMHQKGjlbaaCbxHdSgCXz1VtJh371EAp3glajXsf5EMrWU-uCQrSzL8t5mq4CtP1mFvLVKa9vlOKITLBztGAnUhUidXjKowLdNitKGuPFHRlJB4n5YSOg
+  Aprtoken: $.data.access_token
   OpenTime: '2024-10-29 15:10:57'
   PROJECT_NAME: $.project_name
   _ERROR: ' 0'
@@ -56,30 +56,30 @@ extra_pool:
   _PASSED: '0'
   _SKIPPED: ' 0'
   _SUCCESS_RATE: '0.0'
-  _TIMES: 25.58 s
+  _TIMES: 42.43 s
   _TOTAL: '23'
   audittoken: $.data.access_token
   audittoken1: eyJ4NXQjUzI1NiI6Im02OXFnMnMxeE1NQkFuRFBtLTRyYkZSanNpRWxJSkVSOVRRbTVfT256RmMiLCJraWQiOiJiaWRkaW5nIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIxODUzMjUxMDQ5MzU2NDQ3NzQ0IiwiYXVkIjoiNWRkZmE2ODJkZWQyZWVjOWI1MGI4OTE5YzhmYTRjNDQiLCJuYmYiOjE3MzMxMjc0NTksImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo5MDAwIiwiZXhwIjoxNzMzMTM0NjU5LCJpYXQiOjE3MzMxMjc0NTksImp0aSI6IjA0NzQwNDYwNDE3MjRjM2JiZWExZWM4MmZhZDczNjJjIn0.YPkLfZiCRt4DTLsfh3zg1iKtWvrGB4c5kbnJrwK9a-3ivjVhoaLin9sTrBG3R36pTS58my4NAIe8zDuQUV3-UO8vsKVNxcsK90721RuDBNas2sNhDK5Nb0zvqB2HX-epFN-6EFJLJlXfwsu8Yh8QPG55hMZnzH_5LJ3anPypYdgqMfNIkB45e4XTD4b1M7oxVYkVlBLy1h4hYD6U-4pmCrQ3LUVx6_FgeojZH5Wn6Rtno8yVJnE2ZGj9QVlRT63IOJApICDXXn-Or2TfMBibROrli454hKp9kfmoYPqbgeMSh5TjoXdq2ShBYZb-D4kKtGatH6ZgNQ37dRlkGx8t2w
-  bidDocReferEndTime: '2025-02-12 11:11:13'
-  bidDocReferEndTimeCus: '2025-02-12 11:11:13'
-  bidOpenTime: '2025-02-12 11:11:13'
-  bidSectionCode: E13060054560000wn001001
-  bidSectionId: '1882262914810961922'
-  bidSectionName: 企采-测试接口自动化项目2025-01-23 11:03:40-标段01
+  bidDocReferEndTime: '2025-02-13 09:53:36'
+  bidDocReferEndTimeCus: '2025-02-13 09:53:36'
+  bidOpenTime: '2025-02-13 09:53:36'
+  bidSectionCode: $.data.list[0].bidSectionCode
+  bidSectionId: $.data.list[0].id
+  bidSectionName: $.data.list[0].bidSectionName
   bidSectionName1: 测试接口自动化项目2025-01-21 16:31:29-标段01
   bidSectionName2: 测试接口自动化项目2025-01-21 16:31:29-标段02
   bulletinId: $.data.[0].bulletinId
-  catalogId: '1882262986357399553'
-  docGetEndTime: '2025-02-12 11:11:13'
-  docGetEndTimeCus: '2025-02-12 11:11:13'
+  catalogId: $.data.[0].id
+  docGetEndTime: '2025-02-13 09:53:36'
+  docGetEndTimeCus: '2025-02-13 09:53:36'
   env: test
   evaluation_method: '1'
   feeCash: ''
   feeCommitment: ''
   feeGuarantee: ''
-  fileId: '1882263004848390146'
+  fileId: $.data.id
   fileNum: 0
-  firstAprPsw: DiE_Fsz/BsmI1in1C_STVZXLW9TnK6l2mJDWb8lAhCR4MydDsvBWRHzM7yx9Dg7ZdvaTNt_v/cCCtfBs_P0Xvo_lXsqldn17De4sCH0bJ0Rp_S3CKW8hl37UaDgG2wXjDmCLsrZAUuc_Zh5asIRELYNl8tblUhGNn2RgqZ3UVhk=
+  firstAprPsw: AzCVpjpvyq0KfgdcSO1QfFU9KLEZDCDwa3G3mjlAf4TqT7vdBbtC7XwRW1wt32trPNDC/6rLpXJOmRtalZ5XVJdrgjzahu7X46BSkdgIbsQ7COuwuGe0HAfL_Y3yPjkDfwtLueFSDwAHQjs8tOJmwvFBzpa8DneHOTCUxY/kcwE=
   firstAprUser: trade-audit
   guaranteeType: ''
   ifFee: ''
@@ -88,31 +88,31 @@ extra_pool:
   ifSupportSmallMicro: 'false'
   ifSyndicatedFlag: 'false'
   ifUseCa: 'false'
-  inviteLetter: '1882257939748921345'
-  inviteType: '1'
+  inviteLetter: $.data.[0].id
+  inviteType: '2'
   itemid: '1855903699903414273'
   marginPrice: '0'
   marginUnit: '0'
   noticeContentId: $.data[0].tempFileId
-  noticeEndTime: '2025-02-12 11:11:13'
-  noticeSendTime: '2025-01-23 11:16:13'
-  password: BJFcja4DdZK0cxYoEGWExGJWpsJCENkQFmBvejaOFiZ1WJQGx74oLbdSVNAESVM86dvZwRci1zm9NxbLOb86XaIGlli3OmAWIdytTryHeHabVgIEVnSB8w2EU3CsTvr5AskTh0tvU9lmMQsfq_dAbkQz3cvjbfRulRzFwilYw3k=
+  noticeEndTime: '2025-02-13 09:53:36'
+  noticeSendTime: '2025-01-24 09:58:36'
+  password: Hsad9dPfr0ZfwVGp3Y6nmLaR9d/Ns_KpZ6arW9x8GI1cjx02U25Y8_3H7Zs6BGivBFQkmocPmEet49IXiN1/QY7gvoe8iN3B_87fO0Er5tl/ekyMJe5H3KCtw/MJ2_dr2viRrWAHcViz_AmteXPPls5bVRzdp9nftEv9MlmZbIs=
   pqrMode: '2'
-  purchaseMode: '1'
-  purchaseProjectCode: E13060054560000wn001
-  purchaseProjectName: 测试接口自动化项目2025-01-23 11:11:13
-  purchaseProjectNameDecode: '%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A1%B9%E7%9B%AE2025-01-23%2011%3A11%3A13'
+  purchaseMode: '2'
+  purchaseProjectCode: $.data.list[0].purchaseProjectCode
+  purchaseProjectName: 测试接口自动化项目2025-01-24 09:53:36
+  purchaseProjectNameDecode: '%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A1%B9%E7%9B%AE2025-01-24%2009%3A53%3A36'
   purchaseProjectType: D01
   purchase_project_code: E1306005456000071001
   tenderOrganizeForm: '1'
-  tfId: '1882262979948503041'
+  tfId: $.data
   tfPrice: '0'
   tfid: $.data
   token: $.data.access_token
   tpEvalSectionId: '1855906660619333634'
-  tpId: '1882262914278285313'
+  tpId: $.data.list[0].id
   uploadcashfileid1: $.data.id
-  url: http://trade.qy-test.zszc.jianshicha.cn/etbApi/
+  url: http://trade.jy-test.zszc.jianshicha.cn/etbApi/
   username: 招标人AAA
 noticeEndTime: 2024-10-01
 noticeSendTime: 2024-10-01

@@ -42,6 +42,9 @@ yaml.allow_unicode = True
 # 存储任务状态
 task_status = {}
 
+# 创建一个全局锁
+run_lock = threading.Lock()
+
 
 @app.route('/')
 def test_index():
@@ -309,7 +312,8 @@ def process_task(task_id,data):
     f = io.StringIO()
     output = f.getvalue()
     with redirect_stdout(f):
-        result = run.run()
+        with run_lock:
+            result = run.run()
         #print(result)
         logger.debug(result)
 
@@ -327,8 +331,11 @@ def process_task(task_id,data):
 
 @app.route('/submit', methods=['POST'])
 def test_submit():
+    global task_id_counter
     data = request.form
     task_id = str(len(task_status) + 1)
+    #task_id = str(len(task_status) + 1)
+    #task_status[task_id] = {'status': 'processing', 'log': ''}
     task_status[task_id] = {'status': 'processing', 'log': ''}
     # 启动后台线程处理任务
     threading.Thread(target=process_task, args=(task_id,data)).start()
@@ -350,5 +357,5 @@ def on_join(data):
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000,threaded=True)
         # 执行run文件
