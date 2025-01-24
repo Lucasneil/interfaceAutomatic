@@ -71,9 +71,9 @@
             <div class="form-section">
                 <h2>请选择项目类型 :</h2>
                 <div class="radio-group">
-                    <label><input type="radio" name="project" value="企业采购" /> <span> 企业采购</span></label>
-                    <label><input type="radio" name="project" value="政府采购" /> <span> 政府采购</span></label>
-                    <label><input type="radio" name="project" value="工程建设" /> <span> 工程建设</span></label>
+                    <label><input type="radio" name="projectType" value="企业采购" /> <span> 企业采购</span></label>
+                    <label><input type="radio" name="projectType" value="政府采购" /> <span> 政府采购</span></label>
+                    <label><input type="radio" name="projectType" value="工程建设" /> <span> 工程建设</span></label>
                     
                 </div>
             </div>
@@ -182,6 +182,8 @@
                     const projectChoice = document.querySelector(
                         'input[name="project"]:checked'
                     );
+                    //项目类型
+                    const projectType = document.querySelector('input[name="projectType"]:checked');
                     //招标人用户名
                     const username = document.getElementById("username").value.trim();
                     //招标人密码
@@ -265,6 +267,7 @@
                     formData.append("firstAprPsw", firstAprPsw);
                     formData.append("ifUseCa", firstAprPsw);
                     formData.append("ifFee", ifFee);
+                    formData.append("projectType", projectType);
 
 
                     // 发送数据到后端
