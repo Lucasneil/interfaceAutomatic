@@ -5,16 +5,11 @@ from common.condition import Condition
 from common.logger import Logger
 from common.exchange_data import ExchangeData
 import allure, json, re
-from common.read_file import ReadFile
+from common.read_file import ReadFile, get_readfile_instance  # 导入 get_readfile_instance
 from common.public import ChangeVariables
-from common.ws_request import websocket_run
 
 
 class Api_Request():
-    '''def update_name_times(extra_pool):
-        change_variables_instance = ChangeVariables()
-        change_variables_instance.change_name_times(extra_pool)'''
-
     @classmethod
     def api_data(cls, cases, env_url):
         (
@@ -39,35 +34,27 @@ class Api_Request():
         time.sleep(1)
         Condition().skip_if(cases)
 
-
         url, env = env_url  # 环境，url
-        ExchangeData.extra_pool.update({
+        extra_pool = ExchangeData.get_extra_pool()  # 使用 get_extra_pool 方法
+        extra_pool.update({
             "url": url,
             "env": env,
         })
 
-        allure.dynamic.severity(ReadFile.read_config('$..cor_rel_case_severity')[case_severity])
+        read_file = get_readfile_instance()  # 获取 ReadFile 实例
+        allure.dynamic.severity(read_file.read_config('$..cor_rel_case_severity')[case_severity])
 
-        request_headers = str(ReadFile.read_config('$.request_headers'))  # 获取配置文件中的请求头
-        request_parameters = str(ReadFile.read_config('$.request_parameters'))  # 获取配置文件中的请求参数
-        extra_pool = ReadFile.read_config('$.extra_pool')
-        #cls.update_name_times(extra_pool)
-        
-        # 将缓存参数池中的数据写入配置文件的参数池中
-        #change_variables_instance = ChangeVariables()
-        #change_variables_instance.change_name_times(extra_pool)
+        request_headers = str(read_file.read_config('$.request_headers'))  # 获取配置文件中的请求头
+        request_parameters = str(read_file.read_config('$.request_parameters'))  # 获取配置文件中的请求参数
+        extra_pool = read_file.read_config('$.extra_pool')
 
-
-        # a,b=1,2
         case_title = ExchangeData.rep_expr(case_title, return_type='srt')
         path = ExchangeData.rep_expr(path, return_type='srt')
         header_ex = ExchangeData.rep_expr(header_ex, return_type='dict')
         request_headers = ExchangeData.rep_expr(request_headers, return_type='dict')
         data = ExchangeData.rep_expr(data, return_type='dict')
-        #print("替换的数据是" + str(data))
         file_obj = ExchangeData.rep_expr(file_obj, return_type='dict')
         request_parameters = ExchangeData.rep_expr(request_parameters, return_type='dict')
-        # print('测试123', request_parameters)
 
         header_ex.update(request_headers)  # 合并配置文件中请求头
         if type(data) is dict:
@@ -76,7 +63,6 @@ class Api_Request():
         print("更新完成后的参数是" + str(data))
 
         allure.dynamic.title(case_title)
-
 
         pattern = re.compile(r'^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+')
         if (pattern.search(path)) == None:  # 判断读取的地址是否有前缀地址http://192.168.1.153:8562
@@ -90,10 +76,10 @@ class Api_Request():
             "【用例名称】：%s_%s\n\n【请求地址】：%s\n\n【请求参数】：%s" % (case_mod, case_title, urls, data))
         proxies = {'http': 'http://127.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
 
-        #使用代理方式
-        res = Api_Request().api_request(urls, proxies,method, parametric_key, header_ex, (data), file_obj)
-        #不使用代理方式
-        #res = Api_Request().api_request(urls, method, parametric_key, header_ex, (data), file_obj)
+        # 使用代理方式
+        res = Api_Request().api_request(urls, proxies, method, parametric_key, header_ex, (data), file_obj)
+        # 不使用代理方式
+        # res = Api_Request().api_request(urls, method, parametric_key, header_ex, (data), file_obj)
         print('test')
         if cases[-1]:
             print('等待时间')
@@ -103,8 +89,7 @@ class Api_Request():
         print(res, 'wjj11111')
         return res
 
-    def api_request(self, url,proxies, method, parametric_key, header=None, data=None, file_obj=None) -> dict:
-        #request_parameters = ReadFile.read_config()
+    def api_request(self, url, proxies, method, parametric_key, header=None, data=None, file_obj=None) -> dict:
         if parametric_key == "params":
             parametric = {"params": data}
         elif parametric_key == "data":
@@ -117,7 +102,6 @@ class Api_Request():
         print(parametric)
 
         if file_obj != {}:
-
             file_objs = {}
             for k, v in file_obj.items():
                 file_objs[k] = open(v, 'rb')
@@ -146,7 +130,8 @@ class Api_Request():
         Logger.info('参数类型：%s' % parametric_key)
         Logger.info('请求参数：%s' % data)
         Logger.info('上传文件：%s' % file_obj)
-        print(ReadFile.read_config('$.request_parameters'), 'config.基准参数')
+        read_file = get_readfile_instance()  # 获取 ReadFile 实例
+        print(read_file.read_config('$.request_parameters'), 'config.基准参数')
         proxies = {'http': 'http://127.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
 
         try:
@@ -156,12 +141,11 @@ class Api_Request():
                 time.sleep(10)
                 print("ws请求成功")
                 print(res)
-
             else:
-                #使用代理方便burpsuite抓取请求
-                res = requests.request(method=method, url=url, proxies=proxies,headers=header, files=file_objs,
-                                       **parametric)  # files=file,
-                #不使用代理
+                # 使用代理方便burpsuite抓取请求
+                res = requests.request(method=method, url=url, proxies=proxies, headers=header, files=file_objs,
+                                      **parametric)  # files=file,
+                # 不使用代理
                 '''res = requests.request(method=method, url=url,  headers=header, files=file_objs,
                                        **parametric)  # files=file,'''
                 response = res.json()
@@ -178,6 +162,5 @@ class Api_Request():
                 "附件内容",
                 allure.attachment_type.JSON,
             )
-            
 
         return response

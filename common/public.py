@@ -2,17 +2,19 @@ from datetime import datetime, timedelta
 import time
 import urllib
 from urllib import parse
-from common.read_file import ReadFile
 from common.exchange_data import ExchangeData
 
 class ChangeVariables:
 
-    def __init__(self):
-        self.config = ExchangeData.extra_pool
-        self.dict_name_purchase={'purchaseProjectName'}
-        self.dict_name_section={'bidSectionName1','bidSectionName2'}
-        self.dict_name_decode={'purchaseProjectNameDecode','bidSectionName1Decode','bidSectionName2Decode'}
-        self.dict_time= {'bidDocReferEndTime', 'bidDocReferEndTimeCus', 'bidOpenTime', 'docGetEndTime', 'docGetEndTimeCus','noticeEndTime','noticeSendTime'}
+    def __init__(self, task_id=None):
+        self.task_id = task_id
+        # 获取当前任务的 extra_pool
+        self.extra_pool = ExchangeData.get_extra_pool()
+        # 其他初始化逻辑保持不变...
+        self.dict_name_purchase = {'purchaseProjectName'}
+        self.dict_name_section = {'bidSectionName1', 'bidSectionName2'}
+        self.dict_name_decode = {'purchaseProjectNameDecode', 'bidSectionName1Decode', 'bidSectionName2Decode'}
+        self.dict_time = {'bidDocReferEndTime', 'bidDocReferEndTimeCus', 'bidOpenTime', 'docGetEndTime', 'docGetEndTimeCus', 'noticeEndTime', 'noticeSendTime'}
     def func_por_name(self, object):
         try:
             tims = self.func_times(0)
@@ -38,33 +40,30 @@ class ChangeVariables:
 
     def change_name_times(self, pool):
         pool['purchaseProjectName'] = self.func_por_name('purchaseProjectName')
-        ExchangeData.extra_pool['purchaseProjectName'] = pool['purchaseProjectName']
-        # 更新值
-        ExchangeData.extra_pool['bidSectionName1'] = str(pool['purchaseProjectName']) + '-标段01'
-        ExchangeData.extra_pool['bidSectionName2'] = str(pool['purchaseProjectName']) + '-标段02'
+        self.extra_pool['purchaseProjectName'] = pool['purchaseProjectName']
+        
+        # 更新标段名称
+        self.extra_pool['bidSectionName1'] = f"{pool['purchaseProjectName']}-标段01"
+        self.extra_pool['bidSectionName2'] = f"{pool['purchaseProjectName']}-标段02"
         print("替换完的名称值是" + str(pool['purchaseProjectName']))
-        for key in pool.keys():
-            if key in self.dict_name_decode and key=='purchaseProjectNameDecode':
+        # 处理 URL 编码和解码逻辑
+        for key in self.dict_name_decode:
+            if key == 'purchaseProjectNameDecode':
                 pool[key] = urllib.parse.quote(pool['purchaseProjectName'])
-                ExchangeData.extra_pool[key] = pool[key]  # 更新值
-                print("替换完的名称值是" + str(pool[key]))
-            elif key in self.dict_name_decode and key=='bidSectionName1Decode':
+                self.extra_pool[key] = pool[key]
+            elif key == 'bidSectionName1Decode':
                 pool[key] = urllib.parse.quote(pool['bidSectionName1'])
-                ExchangeData.extra_pool[key] = pool[key]  # 更新值
-                print("替换完的名称值是" + str(pool[key]))
-            elif key in self.dict_name_decode and key=='bidSectionName2Decode':
+                self.extra_pool[key] = pool[key]
+            elif key == 'bidSectionName2Decode':
                 pool[key] = urllib.parse.quote(pool['bidSectionName2'])
-                ExchangeData.extra_pool[key] = pool[key]  # 更新值
-                print("替换完的名称值是" + str(pool[key]))
+                self.extra_pool[key] = pool[key]
 
-            if key in self.dict_time:
-                if key == "noticeSendTime":
-                    pool[key] = str(self.func_times(20)['seconds_later'])
-                    ExchangeData.extra_pool[key] = pool[key]  # 更新值
-                    print(key + "的值是" + str(ExchangeData.extra_pool[key]))
-                else:
-                    pool[key] = str(self.func_times(20)['datetimes'])
-                    ExchangeData.extra_pool[key] = pool[key]  # 更新值
-                    print(key + "的值是" + str(ExchangeData.extra_pool[key]))
+         # 处理时间参数
+        for key in self.dict_time:
+            if key == "noticeSendTime":
+                pool[key] = str(self.func_times(20)['seconds_later'])
+            else:
+                pool[key] = str(self.func_times(20)['datetimes'])
+            self.extra_pool[key] = pool[key]
 
 

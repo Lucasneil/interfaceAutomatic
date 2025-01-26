@@ -63,9 +63,9 @@ extra_pool:
   bidDeptId1: $.data[0].bidDeptId
   bidDeptId2: $.data[1].bidDeptId
   bidDeptId3: $.data[2].bidDeptId
-  bidDocReferEndTime: '2025-02-15 16:58:04'
-  bidDocReferEndTimeCus: '2025-02-15 16:58:04'
-  bidOpenTime: '2025-02-15 16:58:04'
+  bidDocReferEndTime: '2025-02-15 17:36:54'
+  bidDocReferEndTimeCus: '2025-02-15 17:36:54'
+  bidOpenTime: '2025-02-15 17:36:54'
   bidSectionCode: E130600545600005i001001
   bidSectionId: '1879407946316038146'
   bidSectionName: 企采-测试接口自动化项目2025-01-15 13:59:02-标段01
@@ -74,15 +74,15 @@ extra_pool:
   bidSectionName2: 测试接口自动化项目2025-01-15 13:59:02-标段02
   bidSectionName2Decode: '%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A1%B9%E7%9B%AE2025-01-15%2013%3A59%3A02-%E6%A0%87%E6%AE%B502'
   bulletinId: $.data.list[0].bulletinId
-  docGetEndTime: '2025-02-15 16:58:04'
-  docGetEndTimeCus: '2025-02-15 16:58:04'
+  docGetEndTime: '2025-02-15 17:36:54'
+  docGetEndTimeCus: '2025-02-15 17:36:54'
   env: test
   evaluation_method: '1'
   fileId: $.data.id
   fileNum: 0
   fileUrl: $.data[0].fileUrl
   fileid: $.data
-  firstAprPsw: KMXF0CfWfL/WdrZ4HuzIRg2KsSSz0RALHeB2j7jkjD9SKfO//FWY0gXow3JBD1GuSIq10UtNRuFEj7vZiypdNfdTe8BShuYRKymZCEy6pSuQC9gMVZF0hf4O6K1UNzdfuic0xrSiF1wyS4Ky5/yS0bFxENn6mjOVpvoEJAhwqqc=
+  firstAprPsw: HH_tT0fpkhgzoIIar7auoZm4iwjsDZwiGdYH2zl7jx4s/dV4idZ_eq8W/0/7NufMQNqdaQogk1xsg3GwPsZj6DWhfAr9hFlQDBW3thSkw4TdWi7P7iNyky0OXAWg8r2LS371UK2m4cNGq7ZcGhutwq64peVm9bBuFKtZT2Uwdis=
   firstAprUser: 河北代清
   guaranteeType: ''
   ifFee: ''
@@ -108,15 +108,15 @@ extra_pool:
   juryid: $.data.list[0].id
   marginPrice: '0'
   marginUnit: '0'
-  noticeEndTime: '2025-02-15 16:58:04'
-  noticeSendTime: '2025-01-26 17:03:04'
-  password: MFaV9752wcyKkHuUzM2wbcDIxq6IStZO7lofZfKrPeFm/aNqR8IltOJg1CIdt2ZSTgppi8E/tU18whMuRTvCScVxaIFLZv8JJ3AKisJd1yy1U7m7fiiHOeMO4fBc9KADiwoA2J3zX6hxkgiVKDOTqFpr5HtyNTNDRW/WobPD99k=
+  noticeEndTime: '2025-02-15 17:36:54'
+  noticeSendTime: '2025-01-26 17:41:54'
+  password: LU8gv_kGm7edkUJQKMEeWKtnG3/OXwEZHSaCxWDcdQUDuw8to66Wb3BU3_fVzpq66AiSIhpbuugYAnhorAbSEVRmYeny8GzpHet4UvZ0kROw_q/d6EYNl7ugmEldTJHp6iBzcPDJBHEy13gWq8nH5K6GlFJRHJHJasnXI4Zdt30=
   pqrMode: '2'
   purchas_project_id: $.data.list[0].id
   purchaseMode: '1'
   purchaseProjectCode: $.data.list[0].purchaseProjectCode
-  purchaseProjectName: 测试接口自动化项目2025-01-26 16:58:04
-  purchaseProjectNameDecode: '%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A1%B9%E7%9B%AE2025-01-26%2016%3A58%3A04'
+  purchaseProjectName: 测试接口自动化项目2025-01-26 17:36:54
+  purchaseProjectNameDecode: '%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96%E9%A1%B9%E7%9B%AE2025-01-26%2017%3A36%3A54'
   purchaseProjectType: D03
   sectionId: $.data.list[0].id
   stepId: $.data.evalStepDetailDTOList[0].tfEvaluateStepDTO.id
@@ -132,7 +132,7 @@ extra_pool:
   tpEvalSectionId: '1855906660619333634'
   tpId: '1879407945586229249'
   uploadcashfileid1: $.data.id
-  url: http://trade.zz-test.zszc.jianshicha.cn/etbApi/
+  url: http://trade.jy-test.zszc.jianshicha.cn/etbApi/
   username: 招标人ABC
 noticeEndTime: 2024-10-01
 purchaseMode: null
@@ -148,7 +148,7 @@ server:
     P3: normal
     P4: minor
     P5: trivial
-  test: http://trade.zz-test.zszc.jianshicha.cn/etbApi/
+  test: http://trade.jy-test.zszc.jianshicha.cn/etbApi/
 sheet_name: 1-招标-excle
 test_case_type:
   dev:

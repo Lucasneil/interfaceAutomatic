@@ -5,6 +5,8 @@ import allure
 from flask_assets import Environment, Bundle
 from flask_socketio import SocketIO, emit, join_room
 from contextlib import redirect_stdout
+
+from common.read_exce_yaml_caes import get_yaml_excle_caes
 from common.rsa_encrypt import encrypt_data
 import threading
 import io
@@ -12,9 +14,10 @@ import yaml
 import os
 import run
 from common.exchange_data import ExchangeData
-from common.read_file import ReadFile
+from common.read_file import ReadFile, get_readfile_instance
 from common.public import ChangeVariables
-
+import shutil
+import uuid
 
 app = Flask(__name__,template_folder='templates',static_folder='static',static_url_path='/static')
 # 配置 logging 模块
@@ -49,8 +52,12 @@ run_lock = threading.Lock()
 @app.route('/')
 def test_index():
     return render_template('zszc_qy.html')
-def change_conf(data):
+def change_conf(data,task_id):
     global case_dir
+    # 生成任务专属的配置文件路径
+    temp_config_path = f'./config/config_{task_id}.yaml'
+    shutil.copy('./config/config.yaml', temp_config_path)
+    logging.debug(f"任务{task_id}的配置文件路径为：{temp_config_path}")
     #项目类型
     projectChoice = data.get("projectChoice")
     #招标人用户名和密码
@@ -259,8 +266,8 @@ def change_conf(data):
 
     current_file_path = os.path.abspath(__file__)
     current_dir = os.path.dirname(current_file_path)
-    yaml_file_path = os.path.join(current_dir, '.', 'config', 'config.yaml')
-    with open(yaml_file_path, 'r', encoding='utf-8') as f:
+    #yaml_file_path = os.path.join(current_dir, '.', 'config', 'config.yaml')
+    with open(temp_config_path, 'r', encoding='utf-8') as f:
         yaml_data = yaml.load(f, Loader=yaml.FullLoader)
         # 通过页面传输的值替换字典中的值
         yaml_data['server']['test'] = server
@@ -289,7 +296,7 @@ def change_conf(data):
         yaml_data['extra_pool']['marginPrice'] = marginPrice
         yaml_data['extra_pool']['marginUnit'] = marginUnit
         yaml_data['extra_pool']['tfPrice'] = tfPrice
-        change_variables_instance = ChangeVariables()
+        change_variables_instance = ChangeVariables(task_id=task_id)
         change_variables_instance.change_name_times(yaml_data['extra_pool'])
         print(yaml_data['server']['case_severity'])
 
@@ -298,22 +305,23 @@ def change_conf(data):
 
 
         # 将替换完的字典写入yaml配置文件
-    with open(yaml_file_path, 'w', encoding='utf-8') as f:
-        yaml.dump(yaml_data, f,allow_unicode=True)
-        f.flush()
-        os.fsync(f.fileno())
+    with open(temp_config_path, 'w', encoding='utf-8') as f:
+        yaml.dump(yaml_data, f, allow_unicode=True)
+        return temp_config_path
 
-def process_task(task_id,data):
-    change_conf(data)
-    ExchangeData.load_config()
-    ReadFile.get_config_dict()
+def process_task(task_id, data):
+    ExchangeData.load_config(task_id)
+    # 1. 生成任务专属配置文件
+    temp_config_path = change_conf(data, task_id)  # 修改后的 change_conf 返回临时路径
+    # 2. 加载配置到当前线程的 ExchangeData
+    ExchangeData.load_config(task_id)
 
-
+    # 3. 执行测试
     f = io.StringIO()
     output = f.getvalue()
     with redirect_stdout(f):
         with run_lock:
-            result = run.run()
+            result = run.run(task_id)
         #print(result)
         logger.debug(result)
 
@@ -331,12 +339,15 @@ def process_task(task_id,data):
 
 @app.route('/submit', methods=['POST'])
 def test_submit():
-    global task_id_counter
+    #global task_id_counter
+
+    task_id = str(uuid.uuid4())  # 生成唯一任务ID
     data = request.form
-    task_id = str(len(task_status) + 1)
-    #task_id = str(len(task_status) + 1)
+    # #task_id = str(len(task_status) + 1)
     #task_status[task_id] = {'status': 'processing', 'log': ''}
     task_status[task_id] = {'status': 'processing', 'log': ''}
+    temp_config_path = f'./config/config_{task_id}.yaml'
+    shutil.copy('./config/config.yaml', temp_config_path)
     # 启动后台线程处理任务
     threading.Thread(target=process_task, args=(task_id,data)).start()
     #print("操作excel")
@@ -357,5 +368,5 @@ def on_join(data):
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000,threaded=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
         # 执行run文件

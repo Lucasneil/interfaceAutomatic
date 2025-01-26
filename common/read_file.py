@@ -1,7 +1,7 @@
 import logging
 
 import yaml
-
+import threading
 from common.logger import Logger
 from common.operation_excle import operation_excle
 from pathlib import Path
@@ -27,40 +27,49 @@ def write_config_all(obj):
 
 
 class ReadFile:
-    config_dict = None
-    config_path = f"{str(Path(__file__).parent.parent)}/config/config.yaml"
-
-    @classmethod
-    def get_config_dict(cls,) -> dict:
-        """读取配置文件，并且转换成字典
-        return cls.config_dict
-        """
-        if cls.config_dict is None:
-            # 指定编码格式解决，win下跑代码抛出错误
-            with open(cls.config_path, "r", encoding="utf-8") as file:
-                cls.config_dict = yaml.load(file.read(), Loader=yaml.FullLoader)
-        return cls.config_dict
-    #print(config_dict)
-
-    @classmethod
-    def get_case_data_yaml(cls,case_data_yaml) -> dict:
-        """读取配置文件，并且转换成字典
-        return cls.config_dict
-        """
-        with open(case_data_yaml, "r", encoding="utf-8") as file:
-            data_yaml_dict = yaml.load(file.read(), Loader=yaml.FullLoader)
-
-        return data_yaml_dict
+    def __init__(self, task_id=None):
+        self.task_id = task_id
+        self.config_path = (
+            f"./config/config_{task_id}.yaml"
+            if task_id
+            else f"{str(Path(__file__).parent.parent)}/config/config.yaml"
+        )
+        self.config_dict = None  # 实例级配置缓存
+    #config_dict = None
+    #config_path = f"{str(Path(__file__).parent.parent)}/config/config.yaml"
 
 
-    @classmethod
-    def read_config(cls, expr: str = ".") -> str:
-        """默认读取config目录下的config.yaml配置文件，根据传递的expr jsonpath表达式可任意返回任何配置项
-        :param expr: 提取表达式, 使用jsonpath语法,默认值提取整个读取的对象
-        return 根据表达式返回的值
-        """
+    def get_config_dict(self):
+        """读取当前任务的配置文件"""
+        if self.config_dict is None:
+            try:
+                with open(self.config_path, "r", encoding="utf-8") as file:
+                    self.config_dict = yaml.safe_load(file)
+            except Exception as e:
+                raise ValueError(f"加载配置文件失败: {e}")
+        return self.config_dict
+
+
+
+    def read_config(self, expr: str = "."):
+        """从当前任务的配置中读取数据"""
         from common.exchange_data import ExchangeData
-        return ExchangeData.Extract_noe(cls.get_config_dict(), expr)
+        config = self.get_config_dict()
+        return ExchangeData.Extract_noe(config, expr)
+
+    def write_config(self, obj):
+        """将extra_pool写入当前任务的配置文件"""
+        config = self.get_config_dict().copy()
+        config['extra_pool'] = obj
+        try:
+            with open(self.config_path, 'w', encoding='utf-8') as file:
+                yaml.dump(config, file, allow_unicode=True, default_flow_style=False)
+        except Exception as e:
+            raise IOError(f"写入配置文件失败: {e}")
+
+
+
+
 
 
 
@@ -77,18 +86,14 @@ class ReadFile:
         logging.debug("开始调用readFile里的operation_excle_data")
         return operation_excle_data
 
-    @classmethod
-    # 将提取的参数值写入参数池extra_pool
-    def write_config(cls, obj):
-        try:
-            with open(ReadFile.config_path, 'r', encoding='utf-8') as file:
-                data = yaml.safe_load(file)
-                print("原始数据:", data)
-                data['extra_pool'] = obj
-                print("配置修改后的数据:", data)
-            with open(ReadFile.config_path, 'w', encoding='utf-8') as file:
-                yaml.dump(data, file, allow_unicode=True, default_flow_style=False)
-                print("参数池子配置写入成功")
-        except yaml.YAMLError as ex:
-            print(ex)
+
+# 线程局部存储管理实例
+_local = threading.local()
+
+def get_readfile_instance(task_id=None):
+    if not hasattr(_local, 'readfile'):
+        _local.readfile = ReadFile(task_id)
+    return _local.readfile
+
+
 

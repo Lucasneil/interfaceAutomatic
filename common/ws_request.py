@@ -100,7 +100,7 @@ def on_data(wsapp, frame_data, frame_opcode, frame_fin):
     print("on_data", frame_data, frame_opcode, frame_fin, sep=", ")
 
 
-def on_message(wsapp, data):
+def on_message(wsapp, data,task_id):
     print("on_message", data, sep=", ")
 
     if 'nsubscription:sub-1' in data:

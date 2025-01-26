@@ -11,51 +11,74 @@ from common.read_file import ReadFile
 import yaml
 import os
 from pathlib import Path
-
+import threading
 class ExchangeData:
+    _thread_local = threading.local()
     @staticmethod
     def read_config_file(yaml_file_path):
         with open(yaml_file_path, 'r', encoding='utf-8') as f:
             yaml_data = yaml.load(f, Loader=yaml.FullLoader)
         return yaml_data
 
-    @classmethod
-    def initialize(cls):
-        cls.load_config()
 
     @classmethod
-    def load_config(cls):
-        current_file_path = os.path.abspath(__file__)
-        current_dir = os.path.dirname(current_file_path)
-        yaml_file_path = f"{str(Path(__file__).parent.parent)}/config/config.yaml"
+    def get_extra_pool(cls):
+        """获取当前线程的 extra_pool"""
+        if not hasattr(cls._thread_local, 'extra_pool'):
+            # 初始化空字典
+            cls._thread_local.extra_pool = {}
+        return cls._thread_local.extra_pool
 
-        config_data = cls.read_config_file(yaml_file_path)
-        print("通过exchangeData读取到的配置是")
-        print(config_data)
-        extra_pool_yaml = config_data['extra_pool']
+    @classmethod
+    def set_extra_pool(cls, config):
+        """设置当前线程的 extra_pool"""
+        cls._thread_local.extra_pool = config.copy()
+
+    @classmethod
+    def load_config(cls,task_id):
+        cls._thread_local.task_id = task_id
+        config_path = f"./config/config_{task_id}.yaml"
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                config = yaml.safe_load(f)
+                # 更新当前线程的 extra_pool
+                cls.set_extra_pool(config.get('extra_pool', {}))
+                print("通过exchangeData读取到的配置是")
+                print(cls.get_extra_pool())
+        except Exception as e:
+            raise ValueError(f"Failed to load config for task {task_id}: {e}")
+        #current_file_path = os.path.abspath(__file__)
+        #current_dir = os.path.dirname(current_file_path)
+        #yaml_file_path = f"{str(Path(__file__).parent.parent)}/config/config.yaml"
+        #with open(config_path, 'r') as f:
+            #config = yaml.safe_load(f)
+            #cls._thread_local.extra_pool = config['extra_pool']
+        #config_data = cls.read_config_file(yaml_file_path)
+
+        #extra_pool_yaml = config_data['extra_pool']
 
         # 存放提取参数的池子
-        cls.extra_pool = {}
-        cls.extra_pool.update(extra_pool_yaml)
-
+        #cls.extra_pool = {}
+        #cls.extra_pool.update(extra_pool_yaml)
     @classmethod
-    def Extract(cls, response, josn_path_dic):
+    def get_task_id(cls):
+        """获取当前线程的 task_id"""
+        if not hasattr(cls._thread_local, 'task_id'):
+            raise AttributeError("task_id is not set in the current thread")
+        return cls._thread_local.task_id
+    @classmethod
+    def Extract(cls, response, json_path_dic):
+        """从响应中提取参数到当前线程的 extra_pool"""
+        current_pool = cls.get_extra_pool()
         try:
-            josn_path_dic = cls.rep_expr(josn_path_dic, return_type='srt')
-            eval(josn_path_dic)
-        except:
-            pass
-
-        if josn_path_dic != "" and eval(josn_path_dic) != {}:
-            for k, v in eval(josn_path_dic).items():
-                v = cls.rep_expr(v, return_type='no')
-                k = cls.rep_expr(k, return_type='no')
-                try:
-                    jsonpath_v = jsonpath.jsonpath(response, v)
-                    cls.extra_pool[k] = jsonpath_v[random.randint(0, len(jsonpath_v) - 1)]  # 如拿到是多个数据，列表，随机取其中一个
-                except Exception as e:
+            if json_path_dic:
+                for k, v in eval(json_path_dic).items():
                     v = cls.rep_expr(v, return_type='no')
-                    cls.extra_pool[k] = v
+                    jsonpath_v = jsonpath.jsonpath(response, v)
+                    if jsonpath_v:
+                        current_pool[k] = jsonpath_v[0]  # 提取第一个匹配值
+        except Exception as e:
+            pass  # 可根据需要添加日志
 
     @classmethod
     def Extract_noe(cls, dic_data, josn_path):  # 提取参数return出去
@@ -86,11 +109,13 @@ class ExchangeData:
         :param return_type: 返回值类型 srt   dict   no 不改变类型
         return content： 替换表达式后的字符串
         """
+        """替换表达式中的变量，基于当前线程的 extra_pool"""
+        current_pool = cls.get_extra_pool()
         if not isinstance(content, int):  # 判断传来的值为int,直接跳出，否则报错 return self.pattern.sub(convert, self.template) E TypeError: expected stri
             if content != "":
-                data = cls.extra_pool
+                #data = cls.extra_pool
                 try:
-                    content = Template(content).safe_substitute(data)
+                    content = Template(content).safe_substitute(current_pool)
                 except:
                     content = content
                 try:
@@ -120,9 +145,11 @@ class ExchangeData:
 
     @classmethod
     def extra_pool_allure(cls):
+        """将当前线程的 extra_pool 写入Allure报告"""
+        current_pool = cls.get_extra_pool()
         with allure.step('参数池数据：'):
             allure.attach(
-                json.dumps(cls.extra_pool, ensure_ascii=False, indent=4),
+                json.dumps(current_pool, ensure_ascii=False, indent=4),
                 "附件内容",
                 allure.attachment_type.JSON,
             )
@@ -145,11 +172,13 @@ class ExchangeData:
             )
 
     @classmethod
-    def post_pytest_summary(cls, result_data_test):  # 添加测试概况数据到变量池
-        from common.read_file import ReadFile
-        cls.extra_pool.update(result_data_test)
-        cls.extra_pool.update({"PROJECT_NAME": ReadFile.read_config("$.project_name")})
-        Logger.info(cls.extra_pool)
+    def post_pytest_summary(cls, result_data_test):
+        """更新当前线程的 extra_pool"""
+        current_pool = cls.get_extra_pool()
+        #readfile = ReadFile(task_id=os.environ.get("CURRENT_TASK_ID"))
+        current_pool.update(result_data_test)
+        project_name = current_pool['purchaseProjectName']
+        current_pool.update({"PROJECT_NAME": project_name})
 
     @classmethod
     def get_pytest_summary(cls):  # 读取report.html模板，替换变量后，返回完整的html 作为发送邮件内容
@@ -166,5 +195,3 @@ class ExchangeData:
             dic_date.update(cls.extra_pool[i])
         return dic_date
 
-# 初始化配置数据
-ExchangeData.initialize()
