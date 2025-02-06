@@ -143,11 +143,11 @@ class Api_Request():
                 print(res)
             else:
                 # 使用代理方便burpsuite抓取请求
-                res = requests.request(method=method, url=url, proxies=proxies, headers=header, files=file_objs,
-                                      **parametric)  # files=file,
+                '''res = requests.request(method=method, url=url, proxies=proxies, headers=header, files=file_objs,
+                                      **parametric)  # files=file,'''
                 # 不使用代理
-                '''res = requests.request(method=method, url=url,  headers=header, files=file_objs,
-                                       **parametric)  # files=file,'''
+                res = requests.request(method=method, url=url,  headers=header, files=file_objs,
+                                       **parametric)  # files=file,
                 response = res.json()
         except Exception as e:
             Logger.error('请求发送失败：%s' % ((e)))

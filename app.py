@@ -46,7 +46,7 @@ yaml.allow_unicode = True
 task_status = {}
 
 # 创建一个全局锁
-run_lock = threading.Lock()
+#run_lock = threading.Lock()
 
 
 @app.route('/')
@@ -320,8 +320,8 @@ def process_task(task_id, data):
     f = io.StringIO()
     output = f.getvalue()
     with redirect_stdout(f):
-        with run_lock:
-            result = run.run(task_id)
+        #with run_lock:
+        result = run.run(task_id)
         #print(result)
         logger.debug(result)
 

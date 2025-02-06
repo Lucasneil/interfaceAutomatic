@@ -149,7 +149,7 @@
                         <span> 小微</span>
                     </label>
                     <label><input type="checkbox" name="ifSyndicatedFlag" value="0" onclick='handleClick(this);' /> <span> 联合体</span></label>
-                    <label><input type="checkbox" name="ifSupportBlindBid" value="0" onclick='handleClick(this);' /> <span> 暗标</span></label>
+                    <label><input type="checkbox" name="ifSupportBlindBid" value="0" onclick='blindClick(this);' /> <span> 暗标</span></label>
                     <label><input type="checkbox" name="ifJudgesConfirmWinBidder" value="0" onclick='handleClick(this);' /> <span> 评定分离</span></label>
                     <label><input type="checkbox" name="ifUseCa" value="0" onclick='handleClick(this);' /> <span> 是否CA</span></label>
                     <label><input type="checkbox" name="ifFee" value="0" onclick='handleClick(this);' /> <span> 是否费用</span></label>
@@ -159,8 +159,10 @@
 
                 <label for="evaluation-method">评标办法 :</label>
                 <select id="evaluation-method" name="evaluation-method">
+                    <option value="0">请选择评标办法</option>
                     <option value="最低评标价法">最低评标价法</option>
                     <option value="综合评标法">综合评标法</option>
+                    
                 </select>
                 
             </div>
@@ -324,21 +326,21 @@
         function updateOptions() {
             //获取选择的招标方式
             var bidType = document.getElementById("bid-type").value;
-            var inviteType = document.getElementById("inviteType");
+            //var inviteType = document.getElementById("inviteType");
             //获取邀请类型
             var inviteType = document.getElementById("inviteType").value;
-            console.log(inviteType)
+            console.log(inviteType);
             // 清空第二个下拉框的选项
             inviteType.innerHTML = "";
-            console.log("clear success")
+            console.log("clear success");
             //根据招标方式联动邀请方式
             if (bidType === "邀请招标") {
-                document.getElementById("inviteType").innerHTML = "<option value='邀请'>邀请</option>"
+                document.getElementById("inviteType").innerHTML = "<option value='邀请'>邀请</option>";
                 //inviteType.add(new Option("邀请"))
 
             }
             else {
-                document.getElementById("inviteType").innerHTML = "<option value='公开'>公开</option><option value='邀请'>邀请</option>"
+                document.getElementById("inviteType").innerHTML = "<option value='公开'>公开</option><option value='邀请'>邀请</option>";
                 //selectCompanyBtn.style.display = 'none';               
             }
 
@@ -347,6 +349,26 @@
                 cb.value = cb.checked ? 1 : 0;
                 console.log(cb.value);
         }
+        function blindClick(cb) {
+
+            let evaluationMethod;
+            evaluationMethod = document.getElementById("evaluation-method");
+            console.log("获取评标办法元素成功");
+            console.log(evaluationMethod);
+            cb.value = cb.checked ? 1 : 0;
+            console.log(cb.value);
+            if (cb.value === '1'){
+                console.log("走到了if里")
+                document.getElementById("evaluation-method").innerHTML = "";
+                document.getElementById("evaluation-method").innerHTML = "<option value='综合评标法'>综合评标法</option>";
+            }
+            else{
+                console.log("走到了else里")
+                document.getElementById("evaluation-method").innerHTML = "";
+                document.getElementById("evaluation-method").innerHTML = "<option value='最低评标价法'>最低评标价法</option><option value='综合评标法'>综合评标法</option>";
+                }
+            }
+
 
         app.mount("#app");
 
