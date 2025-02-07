@@ -18,6 +18,7 @@ from common.read_file import ReadFile, get_readfile_instance
 from common.public import ChangeVariables
 import shutil
 import uuid
+import requests
 
 app = Flask(__name__,template_folder='templates',static_folder='static',static_url_path='/static')
 # 配置 logging 模块
@@ -308,32 +309,69 @@ def change_conf(data,task_id):
     with open(temp_config_path, 'w', encoding='utf-8') as f:
         yaml.dump(yaml_data, f, allow_unicode=True)
         return temp_config_path
+    
+    
+        
+    
+    
 
 def process_task(task_id, data):
     ExchangeData.load_config(task_id)
     # 1. 生成任务专属配置文件
     temp_config_path = change_conf(data, task_id)  # 修改后的 change_conf 返回临时路径
     # 2. 加载配置到当前线程的 ExchangeData
-    ExchangeData.load_config(task_id)
+    extra_pool = ExchangeData.load_config(task_id)
+    username = extra_pool['username']
+    password = extra_pool['password']
+    firstAprUser = extra_pool['firstAprUser']
+    firstAprPsw = extra_pool['firstAprPsw']
+    url = extra_pool['url'] + 'etbuser/login'
+    data1 = {"username" : username,"password" : password, "identity": "1"}
+    data2 = {"username" : firstAprUser,"password" : firstAprPsw, "identity": "1"}
+    response1 = requests.post(url = url, json = data1)
+    logging.debug(response1.json())
+    responseUser = response1.json().get('msg')
+    logging.debug(responseUser)
 
-    # 3. 执行测试
-    f = io.StringIO()
-    output = f.getvalue()
-    with redirect_stdout(f):
-        #with run_lock:
-        result = run.run(task_id)
-        #print(result)
-        logger.debug(result)
 
-    # 更新任务状态
-    task_status[task_id] = {
-        'status': 'completed',
-        'result': f'提交的数据已处理完成',
-        'log': output
-    }
+    if responseUser == "登录成功":
+        logging.debug("招标人登录成功")
+        response2 = requests.post(url = url, json = data2)
+        logging.debug(response2.json())
+        responseAppr = response2.json().get('msg')
+        logging.debug(responseAppr)
+        if responseAppr == "登录成功":
+            # 3. 执行测试
+            f = io.StringIO()
+            output = f.getvalue()
+            with redirect_stdout(f):
+                # with run_lock:
+                result = run.run(task_id)
+                # print(result)
+                logger.debug(result)
 
-    # 通过WebSocket发送日志
-    socketio.emit('log', {'data': output}, room=task_id)
+            # 更新任务状态
+            task_status[task_id] = {
+                'status': 'completed',
+                'result': f'提交的数据已处理完成',
+                'log': output
+            }
+
+            # 通过WebSocket发送日志
+            socketio.emit('log', {'data': output}, room=task_id)
+        else:
+            # 更新任务状态
+            task_status[task_id] = {
+                'status': 'completed',
+                'result': f'审批人用户名或密码错误'
+            }
+    else:
+        # 更新任务状态
+        task_status[task_id] = {
+            'status': 'completed',
+            'result': f'招标人用户名或密码错误'
+        }
+
 
 
 

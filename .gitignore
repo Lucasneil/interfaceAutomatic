@@ -14,3 +14,10 @@ common/__pycache__/read_file.cpython-312.pyc
 common/__pycache__/operation_excle.cpython-312.pyc
 common/__pycache__/read_exce_yaml_caes.cpython-312.pyc
 common/__pycache__/read_file.cpython-312.pyc
+common/__pycache__/exchange_data.cpython-312.pyc
+.DS_Store
+data/env_test/case_excle/.DS_Store
+data/env_test/.DS_Store
+data/.DS_Store
+.DS_Store
+testapi.py

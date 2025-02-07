@@ -43,8 +43,11 @@ class ExchangeData:
                 config = yaml.safe_load(f)
                 # 更新当前线程的 extra_pool
                 cls.set_extra_pool(config.get('extra_pool', {}))
+                
                 print("通过exchangeData读取到的配置是")
                 print(cls.get_extra_pool())
+                extra_pool = cls._thread_local.extra_pool
+                return extra_pool
         except Exception as e:
             raise ValueError(f"Failed to load config for task {task_id}: {e}")
         #current_file_path = os.path.abspath(__file__)
