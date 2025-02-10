@@ -79,7 +79,7 @@ class ReadFile:
         读取excel格式的测试用例,返回一个生成器对象
         :return 生成器
         """
-        case_severity_list=ReadFile.read_config('$..case_severity')#获取测试用例级别
+        #case_severity_list=ReadFile.read_config('$..case_severity')#获取测试用例级别
 
         excle_path = (cls.read_config("$.file_path.test_case"))#获取测试用例路径
         operation_excle_data=operation_excle.read_excel(excle_path, ['P1'] )  # 返回测试数据列表
