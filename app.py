@@ -5,7 +5,7 @@ import allure
 from flask_assets import Environment, Bundle
 from flask_socketio import SocketIO, emit, join_room
 from contextlib import redirect_stdout
-
+import subprocess
 from common.read_exce_yaml_caes import get_yaml_excle_caes
 from common.rsa_encrypt import encrypt_data
 import threading
@@ -61,6 +61,8 @@ def change_conf(data,task_id):
     logging.debug(f"任务{task_id}的配置文件路径为：{temp_config_path}")
     #项目类型
     projectChoice = data.get("projectChoice")
+    #项目类型：企采、政采、工程
+    projectType = data.get("projectType")
     #招标人用户名和密码
     username = data.get("username")
     password = data.get("password")
@@ -102,22 +104,36 @@ def change_conf(data,task_id):
     tfPrice = '0'
     #保证金缴纳方式
     guaranteeType = ""
+    proUrl = data.get('proUrl')
+    logging.debug("proUrl传过来的值是" + proUrl)
+
+
     
     
     #根据传入的项目类型，匹配excel-case的路径
-    if projectChoice == '涿州':
-        case_dir = './data/env_test/case_excle/zz'
-        print(case_dir)
-    elif projectChoice == '产品化-三方':
-        case_dir = './data/env_test/case_excle/sf'
-    elif projectChoice == '产品化-企采':
-        case_dir = './data/env_test/case_excle/qc'
-    elif projectChoice == '金湡':
-        case_dir = './data/env_test/case_excle/zz'
-    elif projectChoice == '清苑':
-        case_dir = './data/env_test/case_excle/zz'
-    elif projectChoice == '无极':
-        case_dir = './data/env_test/case_excle/zz'
+    if projectType == '企业采购':
+        if projectChoice == '产品化-三方':
+            case_dir = './data/env_test/case_excle/sf'
+        elif projectChoice == '产品化-企采':
+            case_dir = './data/env_test/case_excle/qc'
+        else:
+            case_dir = './data/env_test/case_excle/zz'
+    if projectType == '政府采购':
+        if projectChoice == '产品化-三方':
+            case_dir = './data/env_test/case_excle/sf'
+        elif projectChoice == '产品化-企采':
+            case_dir = './data/env_test/case_excle/qc'
+        else:
+            case_dir = './data/env_test/case_excle/zz'
+    if projectType == '工程建设':
+        if projectChoice == '产品化-三方':
+            case_dir = './data/env_test/case_excle/sf'
+        elif projectChoice == '产品化-企采':
+            case_dir = './data/env_test/case_excle/qc'
+        else:
+            case_dir = './data/env_test/case_excle/zz'
+        
+
 
     #根据传入的招标文件信息做后续处理，根据传入的值进行相应转换
     ifSupportSmallMicro = data.get('ifSupportSmallMicro')
@@ -252,7 +268,15 @@ def change_conf(data,task_id):
         '工程': 'D02'
    }
     # 匹配项目对应的测试地址
-    server = project_mapping.get(projectChoice)
+    if proUrl != '':
+        logging.debug("proUrl不是空的")
+        server = proUrl
+        logging.debug(proUrl)
+    else:
+        logging.debug("proUrl是空的")
+        server = project_mapping.get(projectChoice)
+        logging.debug(server)
+
     # 匹配项目对应的招标方式、组织形式等
     purchaseMode = purchaseMode_mapping.get(purchaseMode)
     pqrMode = pqrMode_mapping.get(pqrMode)
@@ -273,6 +297,7 @@ def change_conf(data,task_id):
         # 通过页面传输的值替换字典中的值
         yaml_data['server']['test'] = server
         yaml_data['extra_pool']['url'] = server
+        logging.debug("写入配置文件前的url是" + server)
         yaml_data['sheet_name'] = '1-招标-excle'
         yaml_data['extra_pool']['username'] = username
         yaml_data['extra_pool']['password'] = password
@@ -310,10 +335,6 @@ def change_conf(data,task_id):
         yaml.dump(yaml_data, f, allow_unicode=True)
         return temp_config_path
     
-    
-        
-    
-    
 
 def process_task(task_id, data):
     ExchangeData.load_config(task_id)
@@ -326,15 +347,17 @@ def process_task(task_id, data):
     firstAprUser = extra_pool['firstAprUser']
     firstAprPsw = extra_pool['firstAprPsw']
     url = extra_pool['url'] + 'etbuser/login'
+    logging.debug("页面调用登录接口时的URL是" + url)
     data1 = {"username" : username,"password" : password, "identity": "1"}
     data2 = {"username" : firstAprUser,"password" : firstAprPsw, "identity": "1"}
     response1 = requests.post(url = url, json = data1)
     logging.debug(response1.json())
     responseUser = response1.json().get('msg')
     logging.debug(responseUser)
+   
 
 
-    if responseUser == "登录成功":
+    if responseUser == "登录成功" and firstAprUser != '':
         logging.debug("招标人登录成功")
         response2 = requests.post(url = url, json = data2)
         logging.debug(response2.json())
@@ -356,6 +379,12 @@ def process_task(task_id, data):
                 'result': f'提交的数据已处理完成',
                 'log': output
             }
+            # 在线提供 Allure 报告
+            report_dir = f'./target/allure-results_{task_id}'
+            serve_command = ['allure', 'serve', report_dir]
+            subprocess.run(serve_command, check=True)
+            
+            
 
             # 通过WebSocket发送日志
             socketio.emit('log', {'data': output}, room=task_id)
@@ -365,6 +394,28 @@ def process_task(task_id, data):
                 'status': 'completed',
                 'result': f'审批人用户名或密码错误'
             }
+    elif responseUser == "登录成功" and firstAprUser == '':
+        # 3. 执行测试
+        f = io.StringIO()
+        output = f.getvalue()
+        with redirect_stdout(f):
+            # with run_lock:
+            result = run.run(task_id)
+            # print(result)
+            logger.debug(result)
+
+        # 更新任务状态
+        task_status[task_id] = {
+            'status': 'completed',
+            'result': f'提交的数据已处理完成',
+            'log': output
+        }
+        # 在线提供 Allure 报告
+        report_dir = f'./target/allure-results_{task_id}'
+        serve_command = ['allure', 'serve', report_dir]
+        subprocess.run(serve_command, check=True)
+
+        
     else:
         # 更新任务状态
         task_status[task_id] = {

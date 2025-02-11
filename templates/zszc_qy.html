@@ -67,6 +67,14 @@
                     <label><input type="radio" name="project" value="无极" /> <span> 无极</span></label>
                 </div>
             </div>
+             <!-- 手动录入url -->
+            <div class="form-section">
+                <h2>或手动录入url :</h2>
+                <lable class="info-section">
+                    </label><input type="text" id="proUrl" name="proUrl" placeholder="样例：http://trade.sanfang-test.zszc.jianshicha.cn/etbApi/" />
+                </lable>
+
+            </div>
             <!-- 选择项目类型 -->
             <div class="form-section">
                 <h2>请选择项目类型 :</h2>
@@ -77,6 +85,7 @@
                     
                 </div>
             </div>
+
 
             <!-- 招标人账号 -->
             <div class="form-section">
@@ -184,6 +193,7 @@
                     const projectChoice = document.querySelector(
                         'input[name="project"]:checked'
                     );
+                    console.log(projectChoice)
                     //项目类型
                     const projectType = document.querySelector('input[name="projectType"]:checked');
                     //招标人用户名
@@ -195,6 +205,9 @@
                     //审批人密码
                     const firstAprPsw = document.getElementById("firstAprPsw").value.trim();
                     console.log(username, password, firstAprUser, firstAprPsw);
+                    //手动录入的url
+                    const proUrl = document.getElementById("proUrl").value.trim();
+                    console.log("输入的url是" + proUrl)
 
                     //招标方式
                     const bidType = document.getElementById("bid-type").value;
@@ -232,9 +245,13 @@
 
                     // 校验输入
 
-                    if (!projectChoice) {
-                        alert("请选择要执行的项目");
+                    if (!projectChoice && !proUrl) {
+                        alert("请选择要执行的项目或手动录入url");
                         return;
+                    }
+                    if (!projectType){
+                        alert("请选择项目类型")
+                        return
                     }
                     if (!username) {
                         alert("请输入招标人账号");
@@ -252,7 +269,12 @@
                     document.getElementById("loading").style.display = "flex";
                     // 组装数据
                     const formData = new FormData();
-                    formData.append("projectChoice", projectChoice.value);
+                    if (!projectChoice){
+                        formData.append("projectChoice", '1');
+                    }
+                    else{
+                        formData.append("projectChoice", projectChoice.value);
+                    }
                     formData.append("username", username);
                     formData.append("password", password);
                     formData.append("bidType", bidType);
@@ -269,7 +291,8 @@
                     formData.append("firstAprPsw", firstAprPsw);
                     formData.append("ifUseCa", firstAprPsw);
                     formData.append("ifFee", ifFee);
-                    formData.append("projectType", projectType);
+                    formData.append("projectType", projectType.value);
+                    formData.append("proUrl",proUrl);
 
 
                     // 发送数据到后端
