@@ -103,13 +103,10 @@ def change_conf(data,task_id):
     #文件费
     tfPrice = '0'
     #保证金缴纳方式
-    guaranteeType = ""
+    guaranteeType = "" 
     proUrl = data.get('proUrl')
     logging.debug("proUrl传过来的值是" + proUrl)
 
-
-    
-    
     #根据传入的项目类型，匹配excel-case的路径
     if projectType == '企业采购':
         if projectChoice == '产品化-三方':
@@ -117,14 +114,14 @@ def change_conf(data,task_id):
         elif projectChoice == '产品化-企采':
             case_dir = './data/env_test/case_excle/qc'
         else:
-            case_dir = './data/env_test/case_excle/CompanyPurchars'
+            case_dir = './data/env_test/case_excle/zz'
     if projectType == '政府采购':
         if projectChoice == '产品化-三方':
             case_dir = './data/env_test/case_excle/sf'
         elif projectChoice == '产品化-企采':
             case_dir = './data/env_test/case_excle/qc'
         else:
-            case_dir = './data/env_test/case_excle/GovermentPurchars'
+            case_dir = './data/env_test/case_excle/zz'
     if projectType == '工程建设':
         if projectChoice == '产品化-三方':
             case_dir = './data/env_test/case_excle/sf'
@@ -335,7 +332,8 @@ def change_conf(data,task_id):
         yaml.dump(yaml_data, f, allow_unicode=True)
         return temp_config_path
     
-def process_task(task_id, data, host):
+
+def process_task(task_id, data):
     ExchangeData.load_config(task_id)
     # 1. 生成任务专属配置文件
     temp_config_path = change_conf(data, task_id)  # 修改后的 change_conf 返回临时路径
@@ -365,27 +363,28 @@ def process_task(task_id, data, host):
             f = io.StringIO()
             output = f.getvalue()
             with redirect_stdout(f):
+                # with run_lock:
                 result = run.run(task_id)
+                # print(result)
                 logger.debug(result)
 
             # 生成 Allure 报告
             report_dir = f'./target/allure-results_{task_id}'
-            allure_command = ['allure', 'generate', report_dir, '-o', f'./target/allure-report_{task_id}', '--clean']
-            subprocess.run(allure_command, check=True, shell=True)
-
-            # 获取 Allure 报告的 URL
-            allure_report_url = f'http://{host}/allure-report_{task_id}/index.html'
+            report_output_dir = f'./static/allure-report_{task_id}'  # 将报告放在静态文件目录中
+            os.makedirs(report_output_dir, exist_ok=True)
+            allure_command = ['allure', 'generate', report_dir, '-o', report_output_dir, '--clean']
+            subprocess.run(allure_command, check=True)
 
             # 更新任务状态
             task_status[task_id] = {
                 'status': 'completed',
                 'result': f'提交的数据已处理完成',
                 'log': output,
-                'allure_report_url': allure_report_url
+                'report_url': f'/allure-report/{task_id}/index.html'  # 添加报告 URL
             }
 
-            # 通过WebSocket发送日志和报告URL
-            socketio.emit('log', {'data': output, 'allure_report_url': allure_report_url}, room=task_id)
+            # 通过WebSocket发送日志
+            socketio.emit('log', {'data': output}, room=task_id)
         else:
             # 更新任务状态
             task_status[task_id] = {
@@ -397,27 +396,25 @@ def process_task(task_id, data, host):
         f = io.StringIO()
         output = f.getvalue()
         with redirect_stdout(f):
+            # with run_lock:
             result = run.run(task_id)
+            # print(result)
             logger.debug(result)
 
         # 生成 Allure 报告
         report_dir = f'./target/allure-results_{task_id}'
-        allure_command = ['allure', 'generate', report_dir, '-o', f'./target/allure-report_{task_id}', '--clean']
-        subprocess.run(allure_command, check=True, shell=True)
-
-        # 获取 Allure 报告的 URL
-        allure_report_url = f'http://{host}/allure-report_{task_id}/index.html'
+        report_output_dir = f'./static/allure-report_{task_id}'  # 将报告放在静态文件目录中
+        os.makedirs(report_output_dir, exist_ok=True)
+        allure_command = ['allure', 'generate', report_dir, '-o', report_output_dir, '--clean']
+        subprocess.run(allure_command, check=True)
 
         # 更新任务状态
         task_status[task_id] = {
             'status': 'completed',
             'result': f'提交的数据已处理完成',
             'log': output,
-            'allure_report_url': allure_report_url
+            'report_url': f'/allure-report/{task_id}/index.html'  # 添加报告 URL
         }
-
-        # 通过WebSocket发送日志和报告URL
-        socketio.emit('log', {'data': output, 'allure_report_url': allure_report_url}, room=task_id)
     else:
         # 更新任务状态
         task_status[task_id] = {
@@ -433,26 +430,32 @@ def test_submit():
 
     task_id = str(uuid.uuid4())  # 生成唯一任务ID
     data = request.form
+    # 获取当前请求的 host（例如 http://192.168.1.100:5000）
+    host = request.host_url  # 或者 request.url_root
     # #task_id = str(len(task_status) + 1)
     #task_status[task_id] = {'status': 'processing', 'log': ''}
     task_status[task_id] = {'status': 'processing', 'log': ''}
     temp_config_path = f'./config/config_{task_id}.yaml'
     shutil.copy('./config/config.yaml', temp_config_path)
-    host = request.host
     # 启动后台线程处理任务
-    threading.Thread(target=process_task, args=(task_id,data, host)).start()
+    # 将 host 传递给 process_task
+    threading.Thread(target=process_task, args=(task_id, data, host)).start()
+    
     #print("操作excel")
 
     return jsonify({'task_id': task_id})
+
+@app.route('/static/allure-report/<task_id>/<path:filename>')
+def serve_allure_report(task_id, filename):
+    report_dir = f'./static/allure-report_{task_id}'
+    return send_from_directory(report_dir, filename)
 
 @app.route('/status/<task_id>', methods=['GET'])
 def get_status(task_id):
     status = task_status.get(task_id, {'status': 'unknown'})
     return jsonify(status)
-    pass
-@app.route('/allure-report_<task_id>/<path:filename>')
-def serve_allure_report(task_id, filename):
-    return send_from_directory(f'./target/allure-report_{task_id}', filename)
+
+
 @socketio.on('join')
 def on_join(data):
     task_id = data['task_id']

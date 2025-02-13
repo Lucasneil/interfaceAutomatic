@@ -185,134 +185,167 @@
     
     <script>
 
-    const app = Vue.createApp({
-        methods: {
-            submitForm() {
-                // 获取表单元素
-                const projectChoice = document.querySelector('input[name="project"]:checked');
-                const projectType = document.querySelector('input[name="projectType"]:checked');
-                const username = document.getElementById("username").value.trim();
-                const password = document.getElementById("password").value.trim();
-                const firstAprUser = document.getElementById("firstAprUser").value.trim();
-                const firstAprPsw = document.getElementById("firstAprPsw").value.trim();
-                const proUrl = document.getElementById("proUrl").value.trim();
-                const bidType = document.getElementById("bid-type").value;
-                const inviteType = document.getElementById("inviteType").value;
-                const purchaseProjectType = document.getElementById("purchaseProjectType").value;
-                const bidOrganization = document.getElementById("bid-organization").value;
-                const evaluationMethod = document.getElementById("evaluation-method").value;
-                const pqrMode = document.getElementById("pqrMode").value;
-                const ifSupportSmallMicro = document.querySelector('input[name="ifSupportSmallMicro"]').value;
-                const ifSyndicatedFlag = document.querySelector('input[name="ifSyndicatedFlag"]').value;
-                const ifSupportBlindBid = document.querySelector('input[name="ifSupportBlindBid"]').value;
-                const ifJudgesConfirmWinBidder = document.querySelector('input[name="ifJudgesConfirmWinBidder"]').value;
-                const ifUseCa = document.querySelector('input[name="ifUseCa"]').value;
-                const ifFee = document.querySelector('input[name="ifFee"]').value;
+        const app = Vue.createApp({
+            methods: {
+                submitForm() {
+                    // 获取表单元素
+                    //所属项目
+                    const projectChoice = document.querySelector(
+                        'input[name="project"]:checked'
+                    );
+                    console.log(projectChoice)
+                    //项目类型
+                    const projectType = document.querySelector('input[name="projectType"]:checked');
+                    //招标人用户名
+                    const username = document.getElementById("username").value.trim();
+                    //招标人密码
+                    const password = document.getElementById("password").value.trim();
+                    //审批人用户名
+                    const firstAprUser = document.getElementById("firstAprUser").value.trim();
+                    //审批人密码
+                    const firstAprPsw = document.getElementById("firstAprPsw").value.trim();
+                    console.log(username, password, firstAprUser, firstAprPsw);
+                    //手动录入的url
+                    const proUrl = document.getElementById("proUrl").value.trim();
+                    console.log("输入的url是" + proUrl)
 
-                // 校验输入
-                if (!projectChoice && !proUrl) {
-                    alert("请选择要执行的项目或手动录入url");
-                    return;
-                }
-                if (!projectType) {
-                    alert("请选择项目类型")
-                    return
-                }
-                if (!username) {
-                    alert("请输入招标人账号");
-                    return;
-                }
-                if (!password) {
-                    alert("请输入招标人密码");
-                    return;
-                }
-                if (!bidType || bidType === "0") {
-                    alert("请选择招标方式");
-                    return;
-                }
+                    //招标方式
+                    const bidType = document.getElementById("bid-type").value;
+                    //邀请类型
+                    const inviteType = document.getElementById("inviteType").value;
+                    console.log("1是公开2是邀请" + inviteType)
+                    
+                    //采购项目类型
+                    const purchaseProjectType = document.getElementById("purchaseProjectType").value;
+                    //招标组织形式
+                    const bidOrganization =
+                        document.getElementById("bid-organization").value;
+                    //评标办法
+                    const evaluationMethod =
+                        document.getElementById("evaluation-method").value;
+                    //资审方式
+                    const pqrMode = document.getElementById("pqrMode").value;
+                    //是否小微
+                    const ifSupportSmallMicro = document.querySelector('input[name="ifSupportSmallMicro"]').value;
+                    console.log("是否支持小微的结果是"+ ifSupportSmallMicro);
+                    //是否联合体
+                    const ifSyndicatedFlag = document.querySelector('input[name="ifSyndicatedFlag"]').value;
+                    console.log("是否联合体的结果是" + ifSyndicatedFlag);
+                    //是否暗标
+                    const ifSupportBlindBid = document.querySelector('input[name="ifSupportBlindBid"]').value;
+                    console.log("是否暗标的结果是" + ifSupportBlindBid);
+                    //是否评定分离
+                    const ifJudgesConfirmWinBidder = document.querySelector('input[name="ifJudgesConfirmWinBidder"]').value;
+                    console.log("是否评定分离的结果是" + ifJudgesConfirmWinBidder);
+                    const ifUseCa = document.querySelector('input[name="ifUseCa"]').value;
+                    console.log("是否使用CA的结果是" + ifUseCa);
+                    const ifFee = document.querySelector('input[name="ifFee"]').value;
+                    console.log("是否费用的结果是" + ifFee);
 
-                // 显示 loading 动画
-                document.getElementById("loading").style.display = "flex";
 
-                // 组装数据
-                const formData = new FormData();
-                if (!projectChoice) {
-                    formData.append("projectChoice", '1');
-                }
-                else {
-                    formData.append("projectChoice", projectChoice.value);
-                }
-                formData.append("username", username);
-                formData.append("password", password);
-                formData.append("bidType", bidType);
-                formData.append("inviteType", inviteType);
-                formData.append("bidOrganization", bidOrganization);
-                formData.append("evaluationMethod", evaluationMethod);
-                formData.append("pqrMode", pqrMode);
-                formData.append("ifSupportSmallMicro", ifSupportSmallMicro);
-                formData.append("ifSyndicatedFlag", ifSyndicatedFlag);
-                formData.append("ifSupportBlindBid", ifSupportBlindBid);
-                formData.append("ifJudgesConfirmWinBidder", ifJudgesConfirmWinBidder);
-                formData.append("purchaseProjectType", purchaseProjectType);
-                formData.append("firstAprUser", firstAprUser);
-                formData.append("firstAprPsw", firstAprPsw);
-                formData.append("ifUseCa", firstAprPsw);
-                formData.append("ifFee", ifFee);
-                formData.append("projectType", projectType.value);
-                formData.append("proUrl", proUrl);
+                    // 校验输入
 
-                // 发送数据到后端
-                fetch("/submit", {
-                    method: "POST",
-                    body: formData,
-                })
-                    .then((response) => {
-                        if (!response.ok || response.status >= 400) {
-                            return response
-                                .text()
-                                .then((text) => Promise.reject(new Error(text)));
-                        }
-                        return response.json();
+                    if (!projectChoice && !proUrl) {
+                        alert("请选择要执行的项目或手动录入url");
+                        return;
+                    }
+                    if (!projectType){
+                        alert("请选择项目类型")
+                        return
+                    }
+                    if (!username) {
+                        alert("请输入招标人账号");
+                        return;
+                    }
+                    if (!password) {
+                        alert("请输入招标人密码");
+                        return;
+                    }
+                    if (!bidType || bidType === "0") {
+                        alert("请选择招标方式");
+                        return;
+                    }
+                    // 显示 loading 动画
+                    document.getElementById("loading").style.display = "flex";
+                    // 组装数据
+                    const formData = new FormData();
+                    if (!projectChoice){
+                        formData.append("projectChoice", '1');
+                    }
+                    else{
+                        formData.append("projectChoice", projectChoice.value);
+                    }
+                    formData.append("username", username);
+                    formData.append("password", password);
+                    formData.append("bidType", bidType);
+                    formData.append("inviteType", inviteType);
+                    formData.append("bidOrganization", bidOrganization);
+                    formData.append("evaluationMethod", evaluationMethod);
+                    formData.append("pqrMode", pqrMode);
+                    formData.append("ifSupportSmallMicro", ifSupportSmallMicro);
+                    formData.append("ifSyndicatedFlag", ifSyndicatedFlag);
+                    formData.append("ifSupportBlindBid", ifSupportBlindBid);
+                    formData.append("ifJudgesConfirmWinBidder", ifJudgesConfirmWinBidder);
+                    formData.append("purchaseProjectType", purchaseProjectType);
+                    formData.append("firstAprUser", firstAprUser);
+                    formData.append("firstAprPsw", firstAprPsw);
+                    formData.append("ifUseCa", firstAprPsw);
+                    formData.append("ifFee", ifFee);
+                    formData.append("projectType", projectType.value);
+                    formData.append("proUrl",proUrl);
+
+
+                    // 发送数据到后端
+                    fetch("/submit", {
+                        method: "POST",
+                        body: formData,
                     })
-                    .then((data) => {
-                        // 开始轮询任务状态
-                        const taskId = data.task_id;
-                        const intervalId = setInterval(() => {
-                            fetch(`/status/${taskId}`)
-                                .then((response) => response.json())
-                                .then((statusData) => {
-                                    if (statusData.status === "completed") {
+                        .then((response) => {
+                            if (!response.ok || response.status >= 400) {
+                                return response
+                                    .text()
+                                    .then((text) => Promise.reject(new Error(text)));
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                            // 开始轮询任务状态
+                            const taskId = data.task_id;
+                            const intervalId = setInterval(() => {
+                                fetch(`/status/${taskId}`)
+                                    .then((response) => response.json())
+                                    .then((statusData) => {
+                                        if (statusData.status === "completed") {
+                                            clearInterval(intervalId);
+                                            // 隐藏 loading
+                                            document.getElementById("loading").style.display =
+                                                "none";
+                                            // 显示后端返回数据
+                                            alert("提交成功！服务器返回：" + statusData.result);
+                                            console.log("后端响应数据：", statusData.result);
+                                        }
+                                    })
+                                    .catch((error) => {
                                         clearInterval(intervalId);
                                         // 隐藏 loading
                                         document.getElementById("loading").style.display = "none";
-                                        // 显示后端返回数据
-                                        alert("提交成功！服务器返回：" + statusData.result);
-                                        console.log("后端响应数据：", statusData.result);
+                                        console.error("请求错误：", error);
+                                        alert("提交失败：" + error.message);
+                                    });
+                            }, 2000); // 每2秒轮询一次
+                        })
+                        .catch((error) => {
+                            // 隐藏 loading
+                            document.getElementById("loading").style.display = "none";
+                            console.error("请求错误：", error);
+                            alert("提交失败：" + error.message);
+                        });
+                },
 
-                                        // 自动打开 Allure 报告
-                                        if (statusData.allure_report_url) {
-                                            window.open(statusData.allure_report_url, '_blank');
-                                        }
-                                    }
-                                })
-                                .catch((error) => {
-                                    clearInterval(intervalId);
-                                    // 隐藏 loading
-                                    document.getElementById("loading").style.display = "none";
-                                    console.error("请求错误：", error);
-                                    alert("提交失败：" + error.message);
-                                });
-                        }, 2000); // 每2秒轮询一次
-                    })
-                    .catch((error) => {
-                        // 隐藏 loading
-                        document.getElementById("loading").style.display = "none";
-                        console.error("请求错误：", error);
-                        alert("提交失败：" + error.message);
-                    });
+
+
             },
-        },
-    });
+        });
         function updateOptions() {
             //获取选择的招标方式
             var bidType = document.getElementById("bid-type").value;
