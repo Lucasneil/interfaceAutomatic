@@ -260,6 +260,7 @@
                 formData.append("ifFee", ifFee);
                 formData.append("projectType", projectType.value);
                 formData.append("proUrl", proUrl);
+                formData.append("bidOrganization",bidOrganization)
 
                 // 发送数据到后端
                 fetch("/submit", {

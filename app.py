@@ -106,26 +106,36 @@ def change_conf(data,task_id):
     guaranteeType = ""
     proUrl = data.get('proUrl')
     logging.debug("proUrl传过来的值是" + proUrl)
-
-
+    # 招标组织形式字典
+    tenderOrganizeForm_mapping = {
+        '自行招标': '1',
+        '委托招标': '2'
+    }
+    tenderOrganizeForm = tenderOrganizeForm_mapping.get(tenderOrganizeForm)
     
     
     #根据传入的项目类型，匹配excel-case的路径
-    if projectType == '企业采购':
+    if projectType == '企业采购' and tenderOrganizeForm == '1':
         if projectChoice == '产品化-三方':
             case_dir = './data/env_test/case_excle/sf'
         elif projectChoice == '产品化-企采':
             case_dir = './data/env_test/case_excle/qc'
         else:
-            case_dir = './data/env_test/case_excle/CompanyPurchars'
-    if projectType == '政府采购':
+            case_dir = './data/env_test/case_excle/CompanyPurcharsZX'
+    elif projectType == '企业采购' and tenderOrganizeForm == '2':
+        case_dir = './data/env_test/case_excle/CompanyPurcharsWT'
+        
+    if projectType == '政府采购' and tenderOrganizeForm == '1':
         if projectChoice == '产品化-三方':
             case_dir = './data/env_test/case_excle/sf'
         elif projectChoice == '产品化-企采':
             case_dir = './data/env_test/case_excle/qc'
         else:
-            case_dir = './data/env_test/case_excle/GovermentPurchars'
-    if projectType == '工程建设':
+            case_dir = './data/env_test/case_excle/GovermentPurcharsZX'
+    elif projectType == '政府采购' and tenderOrganizeForm == '2':
+        case_dir = './data/env_test/case_excle/GovermentPurcharsWT'
+        
+    if projectType == '工程建设' and tenderOrganizeForm == '1':
         if projectChoice == '产品化-三方':
             case_dir = './data/env_test/case_excle/sf'
         elif projectChoice == '产品化-企采':
@@ -242,11 +252,7 @@ def change_conf(data,task_id):
         '竞争性磋商': '6',
         '其他': '7'
     }
-    # 招标组织形式字典
-    tenderOrganizeForm_mapping = {
-        '自行招标': '1',
-        '委托招标': '2'
-    }
+
     # 资审方式字典
     pqrMode_mapping = {
         '资格预审': '1',
@@ -280,7 +286,7 @@ def change_conf(data,task_id):
     # 匹配项目对应的招标方式、组织形式等
     purchaseMode = purchaseMode_mapping.get(purchaseMode)
     pqrMode = pqrMode_mapping.get(pqrMode)
-    tenderOrganizeForm = tenderOrganizeForm_mapping.get(tenderOrganizeForm)
+    
     evaluation_method = evaluation_method_mapping.get(evaluation_method)
     inviteType = inviteType_mapping.get(inviteType)
     print("邀请类型1是公开2是邀请")
@@ -371,7 +377,7 @@ def process_task(task_id, data, host):
             # 生成 Allure 报告
             report_dir = f'./target/allure-results_{task_id}'
             allure_command = ['allure', 'generate', report_dir, '-o', f'./target/allure-report_{task_id}', '--clean']
-            subprocess.run(allure_command, check=True, shell=True)
+            subprocess.run(allure_command, check=True)
 
             # 获取 Allure 报告的 URL
             allure_report_url = f'http://{host}/allure-report_{task_id}/index.html'
