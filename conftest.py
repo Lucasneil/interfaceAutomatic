@@ -4,11 +4,14 @@ import pytest, time
 from common.logger import Logger
 from common.read_file import ReadFile, get_readfile_instance  # 导入 get_readfile_instance
 from common.backup_recovery import BackupRecovery
-
+import uuid
 # 命令行传参 addoption 在 conftest.py 添加命令行选项, 命令行传入参数”—cmdopt“, 用例如果需要用到从命令行传入的参数，就调用 cmdopt 函数：
 def pytest_addoption(parser):
     parser.addoption("--env", action="store", default="test", help=None)
-
+@pytest.fixture
+def unique_uuid():
+    """Fixture to generate a unique UUID for each test."""
+    return str(uuid.uuid4())
 @pytest.fixture(scope='session', autouse=True)
 def Acmdopt(pytestconfig):
     # 两种写法
