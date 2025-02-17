@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template
 import logging
 import pytest
 import allure
 from flask_assets import Environment, Bundle
 from flask_socketio import SocketIO, emit, join_room
 from contextlib import redirect_stdout
-import subprocess
+
 from common.read_exce_yaml_caes import get_yaml_excle_caes
 from common.rsa_encrypt import encrypt_data
 import threading
@@ -61,8 +61,6 @@ def change_conf(data,task_id):
     logging.debug(f"任务{task_id}的配置文件路径为：{temp_config_path}")
     #项目类型
     projectChoice = data.get("projectChoice")
-    #项目类型：企采、政采、工程
-    projectType = data.get("projectType")
     #招标人用户名和密码
     username = data.get("username")
     password = data.get("password")
@@ -83,6 +81,7 @@ def change_conf(data,task_id):
     purchaseMode = data.get('bidType')
     #招标组织形式，自行和委托
     tenderOrganizeForm = data.get('bidOrganization')
+    logging.debug("tenderOrganizeForm的值是" + tenderOrganizeForm)
     #评标办法
     evaluation_method = data.get('evaluationMethod')
     #项目类型：货物、服务、工程
@@ -105,16 +104,18 @@ def change_conf(data,task_id):
     #保证金缴纳方式
     guaranteeType = ""
     proUrl = data.get('proUrl')
+    projectType = data.get('projectType')
     logging.debug("proUrl传过来的值是" + proUrl)
+    
     # 招标组织形式字典
     tenderOrganizeForm_mapping = {
         '自行招标': '1',
         '委托招标': '2'
     }
     tenderOrganizeForm = tenderOrganizeForm_mapping.get(tenderOrganizeForm)
+    logging.debug("tenderOrganizeForm最终的值是" + tenderOrganizeForm)
     
-    
-    #根据传入的项目类型，匹配excel-case的路径
+    # 根据传入的项目类型，匹配excel-case的路径
     if projectType == '企业采购' and tenderOrganizeForm == '1':
         if projectChoice == '产品化-三方':
             case_dir = './data/env_test/case_excle/sf'
@@ -124,7 +125,7 @@ def change_conf(data,task_id):
             case_dir = './data/env_test/case_excle/CompanyPurcharsZX'
     elif projectType == '企业采购' and tenderOrganizeForm == '2':
         case_dir = './data/env_test/case_excle/CompanyPurcharsWT'
-        
+    
     if projectType == '政府采购' and tenderOrganizeForm == '1':
         if projectChoice == '产品化-三方':
             case_dir = './data/env_test/case_excle/sf'
@@ -134,7 +135,7 @@ def change_conf(data,task_id):
             case_dir = './data/env_test/case_excle/GovermentPurcharsZX'
     elif projectType == '政府采购' and tenderOrganizeForm == '2':
         case_dir = './data/env_test/case_excle/GovermentPurcharsWT'
-        
+    
     if projectType == '工程建设' and tenderOrganizeForm == '1':
         if projectChoice == '产品化-三方':
             case_dir = './data/env_test/case_excle/sf'
@@ -142,8 +143,6 @@ def change_conf(data,task_id):
             case_dir = './data/env_test/case_excle/qc'
         else:
             case_dir = './data/env_test/case_excle/zz'
-        
-
 
     #根据传入的招标文件信息做后续处理，根据传入的值进行相应转换
     ifSupportSmallMicro = data.get('ifSupportSmallMicro')
@@ -252,7 +251,7 @@ def change_conf(data,task_id):
         '竞争性磋商': '6',
         '其他': '7'
     }
-
+    
     # 资审方式字典
     pqrMode_mapping = {
         '资格预审': '1',
@@ -282,11 +281,9 @@ def change_conf(data,task_id):
         logging.debug("proUrl是空的")
         server = project_mapping.get(projectChoice)
         logging.debug(server)
-
     # 匹配项目对应的招标方式、组织形式等
     purchaseMode = purchaseMode_mapping.get(purchaseMode)
     pqrMode = pqrMode_mapping.get(pqrMode)
-    
     evaluation_method = evaluation_method_mapping.get(evaluation_method)
     inviteType = inviteType_mapping.get(inviteType)
     print("邀请类型1是公开2是邀请")
@@ -303,7 +300,6 @@ def change_conf(data,task_id):
         # 通过页面传输的值替换字典中的值
         yaml_data['server']['test'] = server
         yaml_data['extra_pool']['url'] = server
-        logging.debug("写入配置文件前的url是" + server)
         yaml_data['sheet_name'] = '1-招标-excle'
         yaml_data['extra_pool']['username'] = username
         yaml_data['extra_pool']['password'] = password
@@ -333,15 +329,12 @@ def change_conf(data,task_id):
         print(yaml_data['server']['case_severity'])
 
 
-
-
-
         # 将替换完的字典写入yaml配置文件
     with open(temp_config_path, 'w', encoding='utf-8') as f:
         yaml.dump(yaml_data, f, allow_unicode=True)
         return temp_config_path
     
-def process_task(task_id, data, host):
+def process_task(task_id, data):
     ExchangeData.load_config(task_id)
     # 1. 生成任务专属配置文件
     temp_config_path = change_conf(data, task_id)  # 修改后的 change_conf 返回临时路径
@@ -352,7 +345,6 @@ def process_task(task_id, data, host):
     firstAprUser = extra_pool['firstAprUser']
     firstAprPsw = extra_pool['firstAprPsw']
     url = extra_pool['url'] + 'etbuser/login'
-    logging.debug("页面调用登录接口时的URL是" + url)
     data1 = {"username" : username,"password" : password, "identity": "1"}
     data2 = {"username" : firstAprUser,"password" : firstAprPsw, "identity": "1"}
     response1 = requests.post(url = url, json = data1)
@@ -360,7 +352,8 @@ def process_task(task_id, data, host):
     responseUser = response1.json().get('msg')
     logging.debug(responseUser)
 
-    if responseUser == "登录成功" and firstAprUser != '':
+
+    if responseUser == "登录成功":
         logging.debug("招标人登录成功")
         response2 = requests.post(url = url, json = data2)
         logging.debug(response2.json())
@@ -371,65 +364,33 @@ def process_task(task_id, data, host):
             f = io.StringIO()
             output = f.getvalue()
             with redirect_stdout(f):
+                # with run_lock:
                 result = run.run(task_id)
+                # print(result)
                 logger.debug(result)
-
-            # 生成 Allure 报告
-            report_dir = f'./target/allure-results_{task_id}'
-            allure_command = ['allure', 'generate', report_dir, '-o', f'./target/allure-report_{task_id}', '--clean']
-            subprocess.run(allure_command, check=True)
-
-            # 获取 Allure 报告的 URL
-            allure_report_url = f'http://{host}/allure-report_{task_id}/index.html'
 
             # 更新任务状态
             task_status[task_id] = {
                 'status': 'completed',
                 'result': f'提交的数据已处理完成',
-                'log': output,
-                'allure_report_url': allure_report_url
+                'log': output
             }
 
-            # 通过WebSocket发送日志和报告URL
-            socketio.emit('log', {'data': output, 'allure_report_url': allure_report_url}, room=task_id)
+            # 通过WebSocket发送日志
+            socketio.emit('log', {'data': output}, room=task_id)
         else:
             # 更新任务状态
             task_status[task_id] = {
                 'status': 'completed',
                 'result': f'审批人用户名或密码错误'
             }
-    elif responseUser == "登录成功" and firstAprUser == '':
-        # 3. 执行测试
-        f = io.StringIO()
-        output = f.getvalue()
-        with redirect_stdout(f):
-            result = run.run(task_id)
-            logger.debug(result)
-
-        # 生成 Allure 报告
-        report_dir = f'./target/allure-results_{task_id}'
-        allure_command = ['allure', 'generate', report_dir, '-o', f'./target/allure-report_{task_id}', '--clean']
-        subprocess.run(allure_command, check=True, shell=True)
-
-        # 获取 Allure 报告的 URL
-        allure_report_url = f'http://{host}/allure-report_{task_id}/index.html'
-
-        # 更新任务状态
-        task_status[task_id] = {
-            'status': 'completed',
-            'result': f'提交的数据已处理完成',
-            'log': output,
-            'allure_report_url': allure_report_url
-        }
-
-        # 通过WebSocket发送日志和报告URL
-        socketio.emit('log', {'data': output, 'allure_report_url': allure_report_url}, room=task_id)
     else:
         # 更新任务状态
         task_status[task_id] = {
             'status': 'completed',
             'result': f'招标人用户名或密码错误'
         }
+
 
 
 
@@ -444,9 +405,8 @@ def test_submit():
     task_status[task_id] = {'status': 'processing', 'log': ''}
     temp_config_path = f'./config/config_{task_id}.yaml'
     shutil.copy('./config/config.yaml', temp_config_path)
-    host = request.host
     # 启动后台线程处理任务
-    threading.Thread(target=process_task, args=(task_id,data, host)).start()
+    threading.Thread(target=process_task, args=(task_id,data)).start()
     #print("操作excel")
 
     return jsonify({'task_id': task_id})
@@ -456,9 +416,7 @@ def get_status(task_id):
     status = task_status.get(task_id, {'status': 'unknown'})
     return jsonify(status)
     pass
-@app.route('/allure-report_<task_id>/<path:filename>')
-def serve_allure_report(task_id, filename):
-    return send_from_directory(f'./target/allure-report_{task_id}', filename)
+
 @socketio.on('join')
 def on_join(data):
     task_id = data['task_id']

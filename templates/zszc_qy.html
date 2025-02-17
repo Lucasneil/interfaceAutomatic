@@ -209,6 +209,7 @@
                 const ifUseCa = document.querySelector('input[name="ifUseCa"]').value;
                 const ifFee = document.querySelector('input[name="ifFee"]').value;
 
+
                 // 校验输入
                 if (!projectChoice && !proUrl) {
                     alert("请选择要执行的项目或手动录入url");
@@ -246,7 +247,6 @@
                 formData.append("password", password);
                 formData.append("bidType", bidType);
                 formData.append("inviteType", inviteType);
-                formData.append("bidOrganization", bidOrganization);
                 formData.append("evaluationMethod", evaluationMethod);
                 formData.append("pqrMode", pqrMode);
                 formData.append("ifSupportSmallMicro", ifSupportSmallMicro);

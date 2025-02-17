@@ -1,0 +1,708 @@
+self = <test_caes.test_001.Test object at 0x00000232D88D7020>
+case = ['公开', 'a1', '招标人登录', '', 'etbuser/login', 'P1', ...]
+get_db = <common.db.DB object at 0x00000232D89A7F20>
+env_url = ['http://trade.jy-test.zszc.jianshicha.cn/etbApi/', 'test']
+unique_uuid = 'e175700a-a7f6-4b9a-9e8d-7a418d2b2ae3'
+
+    @allure.step
+    def test_001(self, case, get_db, env_url, unique_uuid):
+        logging.debug(case)
+        with allure.step(f"请求数据：{unique_uuid}"):
+>           response = (Api_Request.api_data(case, env_url))
+
+test_caes\test_001.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cls = <class 'common.api_request.Api_Request'>
+cases = ['公开', 'a1', '招标人登录', '', 'etbuser/login', 'P1', ...]
+env_url = ['http://trade.jy-test.zszc.jianshicha.cn/etbApi/', 'test']
+
+    @classmethod
+    def api_data(cls, cases, env_url):
+        (
+            case_mod,
+            case_id,
+            case_title,
+            header_ex,
+            path,
+            case_severity,
+            skips,
+            method,
+            parametric_key,
+            file_obj,
+            data,
+            extra,
+            sql,
+            expect,
+            latency_time,
+        ) = cases
+        Logger.info(f'用例名称：{case_mod}-{case_id}-{case_title}')
+        allure.dynamic.story(case_mod)
+        time.sleep(1)
+        Condition().skip_if(cases)
+    
+        url, env = env_url  # 环境，url
+        extra_pool = ExchangeData.get_extra_pool()  # 使用 get_extra_pool 方法
+        extra_pool.update({
+            "url": url,
+            "env": env,
+        })
+    
+        read_file = get_readfile_instance()  # 获取 ReadFile 实例
+        allure.dynamic.severity(read_file.read_config('$..cor_rel_case_severity')[case_severity])
+    
+        request_headers = str(read_file.read_config('$.request_headers'))  # 获取配置文件中的请求头
+        request_parameters = str(read_file.read_config('$.request_parameters'))  # 获取配置文件中的请求参数
+        extra_pool = read_file.read_config('$.extra_pool')
+    
+        case_title = ExchangeData.rep_expr(case_title, return_type='srt')
+        path = ExchangeData.rep_expr(path, return_type='srt')
+        header_ex = ExchangeData.rep_expr(header_ex, return_type='dict')
+        request_headers = ExchangeData.rep_expr(request_headers, return_type='dict')
+        data = ExchangeData.rep_expr(data, return_type='dict')
+        file_obj = ExchangeData.rep_expr(file_obj, return_type='dict')
+        request_parameters = ExchangeData.rep_expr(request_parameters, return_type='dict')
+    
+        header_ex.update(request_headers)  # 合并配置文件中请求头
+        if type(data) is dict:
+            data.update(request_parameters)  # 合并配置文件中请求参数
+    
+        print("更新完成后的参数是" + str(data))
+    
+        allure.dynamic.title(case_title)
+    
+        pattern = re.compile(r'^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+')
+        if (pattern.search(path)) == None:  # 判断读取的地址是否有前缀地址http://192.168.1.153:8562
+            if url[-1] == '/':
+                url = url[:-1]
+            urls = "%s/%s" % (url, path)  # 无前缀读取配置文件添加前缀
+        else:
+            urls = path  # 有前缀使用读取的完整地址
+    
+        allure.dynamic.description(
+            "【用例名称】：%s_%s\n\n【请求地址】：%s\n\n【请求参数】：%s" % (case_mod, case_title, urls, data))
+        proxies = {'http': 'http://127.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
+    
+        # 使用代理方式
+>       res = Api_Request().api_request(urls, proxies, method, parametric_key, header_ex, (data), file_obj)
+
+common\api_request.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <common.api_request.Api_Request object at 0x00000232D8982420>
+url = 'http://trade.jy-test.zszc.jianshicha.cn/etbApi/etbuser/login'
+proxies = {'http': 'http://127.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
+method = 'post', parametric_key = 'json', header = {}
+data = {'identity': '1', 'password': 'd96cCMuPgksfzW6xfYRlDddFC9Gb/pQdhStXxVPXjkKzmmPAtXAtbSvh5ipyIV2c2ySVAThrD9mSeW7ontHr2XmP2wgIXMdq/Irif8XX4brlBVr_AMQhK3mUMuHEL1nPdnYjLITOH9GdSzkHoowD797AB24AZE14nvGOzmrCPc4=', 'username': '招标人AAA'}
+file_obj = {}
+
+    def api_request(self, url, proxies, method, parametric_key, header=None, data=None, file_obj=None) -> dict:
+        if parametric_key == "params":
+            parametric = {"params": data}
+        elif parametric_key == "data":
+            parametric = {"data": data}
+        elif parametric_key == "json":
+            parametric = {"json": data}
+        else:
+            raise ValueError("“parametric_key”的可选关键字为params, json, data")
+        print(type(parametric), '测试测试测试测试')
+        print(parametric)
+    
+        if file_obj != {}:
+            file_objs = {}
+            for k, v in file_obj.items():
+                file_objs[k] = open(v, 'rb')
+        else:
+            file_objs = {}
+    
+        req_info = {
+            "请求地址": url,
+            "请求头": header,
+            "请求方法": method,
+            '参数类型': parametric_key,
+            "请求数据": data,
+            "上传文件": file_obj,
+        }
+    
+>       with allure.step('请求数据：'):
+
+common\api_request.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons._allure.StepContext object at 0x00000232D89832C0>
+exc_type = None, exc_val = None, exc_tb = None
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+>       plugin_manager.hook.stop_step(uuid=self.uuid, title=self.title, exc_type=exc_type, exc_val=exc_val,
+                                      exc_tb=exc_tb)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\_allure.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <HookCaller 'stop_step'>
+kwargs = {'exc_tb': None, 'exc_type': None, 'exc_val': None, 'title': '请求数据：', ...}
+firstresult = False
+
+    def __call__(self, **kwargs: object) -> Any:
+        """Call the hook.
+    
+        Only accepts keyword arguments, which should match the hook
+        specification.
+    
+        Returns the result(s) of calling all registered plugins, see
+        :ref:`calling`.
+        """
+        assert (
+            not self.is_historic()
+        ), "Cannot directly call a historic hook - use call_historic instead."
+        self._verify_all_args_are_provided(kwargs)
+        firstresult = self.spec.opts.get("firstresult", False) if self.spec else False
+        # Copy because plugins may register other plugins during iteration (#438).
+>       return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\pluggy\_hooks.py:513: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pluggy._manager.PluginManager object at 0x00000232D6235B80>
+hook_name = 'stop_step'
+methods = [<HookImpl plugin_name='2417369104704', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D66D4140>>, <HookImpl plugin_name='2417403688288', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D87CF560>>]
+kwargs = {'exc_tb': None, 'exc_type': None, 'exc_val': None, 'title': '请求数据：', ...}
+firstresult = False
+
+    def _hookexec(
+        self,
+        hook_name: str,
+        methods: Sequence[HookImpl],
+        kwargs: Mapping[str, object],
+        firstresult: bool,
+    ) -> object | list[object]:
+        # called from all hookcaller instances.
+        # enable_tracing will set its own wrapping function at self._inner_hookexec
+>       return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\pluggy\_manager.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+hook_name = 'stop_step'
+hook_impls = [<HookImpl plugin_name='2417369104704', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D66D4140>>, <HookImpl plugin_name='2417403688288', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D87CF560>>]
+caller_kwargs = {'exc_tb': None, 'exc_type': None, 'exc_val': None, 'title': '请求数据：', ...}
+firstresult = False
+
+    def _multicall(
+        hook_name: str,
+        hook_impls: Sequence[HookImpl],
+        caller_kwargs: Mapping[str, object],
+        firstresult: bool,
+    ) -> object | list[object]:
+        """Execute a call into multiple python functions/methods and return the
+        result(s).
+    
+        ``caller_kwargs`` comes from HookCaller.__call__().
+        """
+        __tracebackhide__ = True
+        results: list[object] = []
+        exception = None
+        only_new_style_wrappers = True
+        try:  # run impl and wrapper setup functions in a loop
+            teardowns: list[Teardown] = []
+            try:
+                for hook_impl in reversed(hook_impls):
+                    try:
+                        args = [caller_kwargs[argname] for argname in hook_impl.argnames]
+                    except KeyError:
+                        for argname in hook_impl.argnames:
+                            if argname not in caller_kwargs:
+                                raise HookCallError(
+                                    f"hook call must provide argument {argname!r}"
+                                )
+    
+                    if hook_impl.hookwrapper:
+                        only_new_style_wrappers = False
+                        try:
+                            # If this cast is not valid, a type error is raised below,
+                            # which is the desired response.
+                            res = hook_impl.function(*args)
+                            wrapper_gen = cast(Generator[None, Result[object], None], res)
+                            next(wrapper_gen)  # first yield
+                            teardowns.append((wrapper_gen, hook_impl))
+                        except StopIteration:
+                            _raise_wrapfail(wrapper_gen, "did not yield")
+                    elif hook_impl.wrapper:
+                        try:
+                            # If this cast is not valid, a type error is raised below,
+                            # which is the desired response.
+                            res = hook_impl.function(*args)
+                            function_gen = cast(Generator[None, object, object], res)
+                            next(function_gen)  # first yield
+                            teardowns.append(function_gen)
+                        except StopIteration:
+                            _raise_wrapfail(function_gen, "did not yield")
+                    else:
+                        res = hook_impl.function(*args)
+                        if res is not None:
+                            results.append(res)
+                            if firstresult:  # halt further impl calls
+                                break
+            except BaseException as exc:
+                exception = exc
+        finally:
+            # Fast path - only new-style wrappers, no Result.
+            if only_new_style_wrappers:
+                if firstresult:  # first result hooks return a single value
+                    result = results[0] if results else None
+                else:
+                    result = results
+    
+                # run all wrapper post-yield blocks
+                for teardown in reversed(teardowns):
+                    try:
+                        if exception is not None:
+                            teardown.throw(exception)  # type: ignore[union-attr]
+                        else:
+                            teardown.send(result)  # type: ignore[union-attr]
+                        # Following is unreachable for a well behaved hook wrapper.
+                        # Try to force finalizers otherwise postponed till GC action.
+                        # Note: close() may raise if generator handles GeneratorExit.
+                        teardown.close()  # type: ignore[union-attr]
+                    except StopIteration as si:
+                        result = si.value
+                        exception = None
+                        continue
+                    except BaseException as e:
+                        exception = e
+                        continue
+                    _raise_wrapfail(teardown, "has second yield")  # type: ignore[arg-type]
+    
+                if exception is not None:
+>                   raise exception.with_traceback(exception.__traceback__)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\pluggy\_callers.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+hook_name = 'stop_step'
+hook_impls = [<HookImpl plugin_name='2417369104704', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D66D4140>>, <HookImpl plugin_name='2417403688288', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D87CF560>>]
+caller_kwargs = {'exc_tb': None, 'exc_type': None, 'exc_val': None, 'title': '请求数据：', ...}
+firstresult = False
+
+    def _multicall(
+        hook_name: str,
+        hook_impls: Sequence[HookImpl],
+        caller_kwargs: Mapping[str, object],
+        firstresult: bool,
+    ) -> object | list[object]:
+        """Execute a call into multiple python functions/methods and return the
+        result(s).
+    
+        ``caller_kwargs`` comes from HookCaller.__call__().
+        """
+        __tracebackhide__ = True
+        results: list[object] = []
+        exception = None
+        only_new_style_wrappers = True
+        try:  # run impl and wrapper setup functions in a loop
+            teardowns: list[Teardown] = []
+            try:
+                for hook_impl in reversed(hook_impls):
+                    try:
+                        args = [caller_kwargs[argname] for argname in hook_impl.argnames]
+                    except KeyError:
+                        for argname in hook_impl.argnames:
+                            if argname not in caller_kwargs:
+                                raise HookCallError(
+                                    f"hook call must provide argument {argname!r}"
+                                )
+    
+                    if hook_impl.hookwrapper:
+                        only_new_style_wrappers = False
+                        try:
+                            # If this cast is not valid, a type error is raised below,
+                            # which is the desired response.
+                            res = hook_impl.function(*args)
+                            wrapper_gen = cast(Generator[None, Result[object], None], res)
+                            next(wrapper_gen)  # first yield
+                            teardowns.append((wrapper_gen, hook_impl))
+                        except StopIteration:
+                            _raise_wrapfail(wrapper_gen, "did not yield")
+                    elif hook_impl.wrapper:
+                        try:
+                            # If this cast is not valid, a type error is raised below,
+                            # which is the desired response.
+                            res = hook_impl.function(*args)
+                            function_gen = cast(Generator[None, object, object], res)
+                            next(function_gen)  # first yield
+                            teardowns.append(function_gen)
+                        except StopIteration:
+                            _raise_wrapfail(function_gen, "did not yield")
+                    else:
+>                       res = hook_impl.function(*args)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\pluggy\_callers.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_pytest.listener.AllureListener object at 0x00000232D66D4140>
+uuid = '1e0d3f9b-eef1-4c30-9353-a28d27816061', exc_type = None, exc_val = None
+exc_tb = None
+
+    @allure_commons.hookimpl
+    def stop_step(self, uuid, exc_type, exc_val, exc_tb):
+>       self.allure_logger.stop_step(uuid,
+                                     stop=now(),
+                                     status=get_status(exc_val),
+                                     statusDetails=get_status_details(exc_type, exc_val, exc_tb))
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_pytest\listener.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.AllureReporter object at 0x00000232D856C830>
+uuid = '1e0d3f9b-eef1-4c30-9353-a28d27816061'
+kwargs = {'status': 'passed', 'statusDetails': None, 'stop': 1739437165585}
+
+    def stop_step(self, uuid, **kwargs):
+        if uuid in self._orphan_items:
+            self._orphan_items.remove(uuid)
+        else:
+>           self._update_item(uuid, **kwargs)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.AllureReporter object at 0x00000232D856C830>
+uuid = '1e0d3f9b-eef1-4c30-9353-a28d27816061'
+kwargs = {'status': 'passed', 'statusDetails': None, 'stop': 1739437165585}
+
+    def _update_item(self, uuid, **kwargs):
+>       item = self._items[uuid] if uuid else self._items[next(reversed(self._items))]
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.ThreadContextItems object at 0x00000232D86207D0>
+item = '1e0d3f9b-eef1-4c30-9353-a28d27816061'
+
+    def __getitem__(self, item):
+>       return self.thread_context.__getitem__(item)
+E       KeyError: '1e0d3f9b-eef1-4c30-9353-a28d27816061'
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:33: KeyError
+
+During handling of the above exception, another exception occurred:
+
+a = (<test_caes.test_001.Test object at 0x00000232D88D7020>,)
+kw = {'case': ['公开', 'a1', '招标人登录', '', 'etbuser/login', 'P1', ...], 'env_url': ['http://trade.jy-test.zszc.jianshicha.cn/e... 'test'], 'get_db': <common.db.DB object at 0x00000232D89A7F20>, 'unique_uuid': 'e175700a-a7f6-4b9a-9e8d-7a418d2b2ae3'}
+__tracebackhide__ = True
+params = OrderedDict({'case': '[\'公开\', \'a1\', \'招标人登录\', \'\', \'etbuser/login\', \'P1\', \'\', \'post\', \'json\', \'\', \'{...['http://trade.jy-test.zszc.jianshicha.cn/etbApi/', 'test']", 'unique_uuid': "'e175700a-a7f6-4b9a-9e8d-7a418d2b2ae3'"})
+args = ['<test_caes.test_001.Test object at 0x00000232D88D7020>']
+
+    @wraps(func)
+    def impl(*a, **kw):
+        __tracebackhide__ = True
+        params = func_parameters(func, *a, **kw)
+        args = list(map(lambda x: represent(x), a))
+        with StepContext(self.title.format(*args, **params), params):
+>           return func(*a, **kw)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\_allure.py:172: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <test_caes.test_001.Test object at 0x00000232D88D7020>
+case = ['公开', 'a1', '招标人登录', '', 'etbuser/login', 'P1', ...]
+get_db = <common.db.DB object at 0x00000232D89A7F20>
+env_url = ['http://trade.jy-test.zszc.jianshicha.cn/etbApi/', 'test']
+unique_uuid = 'e175700a-a7f6-4b9a-9e8d-7a418d2b2ae3'
+
+    @allure.step
+    def test_001(self, case, get_db, env_url, unique_uuid):
+        logging.debug(case)
+>       with allure.step(f"请求数据：{unique_uuid}"):
+
+test_caes\test_001.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons._allure.StepContext object at 0x00000232D8901EB0>
+exc_type = <class 'KeyError'>
+exc_val = KeyError('1e0d3f9b-eef1-4c30-9353-a28d27816061')
+exc_tb = <traceback object at 0x00000232D89E6300>
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+>       plugin_manager.hook.stop_step(uuid=self.uuid, title=self.title, exc_type=exc_type, exc_val=exc_val,
+                                      exc_tb=exc_tb)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\_allure.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <HookCaller 'stop_step'>
+kwargs = {'exc_tb': <traceback object at 0x00000232D89E6300>, 'exc_type': <class 'KeyError'>, 'exc_val': KeyError('1e0d3f9b-eef1-4c30-9353-a28d27816061'), 'title': '请求数据：e175700a-a7f6-4b9a-9e8d-7a418d2b2ae3', ...}
+firstresult = False
+
+    def __call__(self, **kwargs: object) -> Any:
+        """Call the hook.
+    
+        Only accepts keyword arguments, which should match the hook
+        specification.
+    
+        Returns the result(s) of calling all registered plugins, see
+        :ref:`calling`.
+        """
+        assert (
+            not self.is_historic()
+        ), "Cannot directly call a historic hook - use call_historic instead."
+        self._verify_all_args_are_provided(kwargs)
+        firstresult = self.spec.opts.get("firstresult", False) if self.spec else False
+        # Copy because plugins may register other plugins during iteration (#438).
+>       return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\pluggy\_hooks.py:513: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pluggy._manager.PluginManager object at 0x00000232D6235B80>
+hook_name = 'stop_step'
+methods = [<HookImpl plugin_name='2417369104704', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D66D4140>>, <HookImpl plugin_name='2417403688288', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D87CF560>>]
+kwargs = {'exc_tb': <traceback object at 0x00000232D89E6300>, 'exc_type': <class 'KeyError'>, 'exc_val': KeyError('1e0d3f9b-eef1-4c30-9353-a28d27816061'), 'title': '请求数据：e175700a-a7f6-4b9a-9e8d-7a418d2b2ae3', ...}
+firstresult = False
+
+    def _hookexec(
+        self,
+        hook_name: str,
+        methods: Sequence[HookImpl],
+        kwargs: Mapping[str, object],
+        firstresult: bool,
+    ) -> object | list[object]:
+        # called from all hookcaller instances.
+        # enable_tracing will set its own wrapping function at self._inner_hookexec
+>       return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\pluggy\_manager.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+hook_name = 'stop_step'
+hook_impls = [<HookImpl plugin_name='2417369104704', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D66D4140>>, <HookImpl plugin_name='2417403688288', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D87CF560>>]
+caller_kwargs = {'exc_tb': <traceback object at 0x00000232D89E6300>, 'exc_type': <class 'KeyError'>, 'exc_val': KeyError('1e0d3f9b-eef1-4c30-9353-a28d27816061'), 'title': '请求数据：e175700a-a7f6-4b9a-9e8d-7a418d2b2ae3', ...}
+firstresult = False
+
+    def _multicall(
+        hook_name: str,
+        hook_impls: Sequence[HookImpl],
+        caller_kwargs: Mapping[str, object],
+        firstresult: bool,
+    ) -> object | list[object]:
+        """Execute a call into multiple python functions/methods and return the
+        result(s).
+    
+        ``caller_kwargs`` comes from HookCaller.__call__().
+        """
+        __tracebackhide__ = True
+        results: list[object] = []
+        exception = None
+        only_new_style_wrappers = True
+        try:  # run impl and wrapper setup functions in a loop
+            teardowns: list[Teardown] = []
+            try:
+                for hook_impl in reversed(hook_impls):
+                    try:
+                        args = [caller_kwargs[argname] for argname in hook_impl.argnames]
+                    except KeyError:
+                        for argname in hook_impl.argnames:
+                            if argname not in caller_kwargs:
+                                raise HookCallError(
+                                    f"hook call must provide argument {argname!r}"
+                                )
+    
+                    if hook_impl.hookwrapper:
+                        only_new_style_wrappers = False
+                        try:
+                            # If this cast is not valid, a type error is raised below,
+                            # which is the desired response.
+                            res = hook_impl.function(*args)
+                            wrapper_gen = cast(Generator[None, Result[object], None], res)
+                            next(wrapper_gen)  # first yield
+                            teardowns.append((wrapper_gen, hook_impl))
+                        except StopIteration:
+                            _raise_wrapfail(wrapper_gen, "did not yield")
+                    elif hook_impl.wrapper:
+                        try:
+                            # If this cast is not valid, a type error is raised below,
+                            # which is the desired response.
+                            res = hook_impl.function(*args)
+                            function_gen = cast(Generator[None, object, object], res)
+                            next(function_gen)  # first yield
+                            teardowns.append(function_gen)
+                        except StopIteration:
+                            _raise_wrapfail(function_gen, "did not yield")
+                    else:
+                        res = hook_impl.function(*args)
+                        if res is not None:
+                            results.append(res)
+                            if firstresult:  # halt further impl calls
+                                break
+            except BaseException as exc:
+                exception = exc
+        finally:
+            # Fast path - only new-style wrappers, no Result.
+            if only_new_style_wrappers:
+                if firstresult:  # first result hooks return a single value
+                    result = results[0] if results else None
+                else:
+                    result = results
+    
+                # run all wrapper post-yield blocks
+                for teardown in reversed(teardowns):
+                    try:
+                        if exception is not None:
+                            teardown.throw(exception)  # type: ignore[union-attr]
+                        else:
+                            teardown.send(result)  # type: ignore[union-attr]
+                        # Following is unreachable for a well behaved hook wrapper.
+                        # Try to force finalizers otherwise postponed till GC action.
+                        # Note: close() may raise if generator handles GeneratorExit.
+                        teardown.close()  # type: ignore[union-attr]
+                    except StopIteration as si:
+                        result = si.value
+                        exception = None
+                        continue
+                    except BaseException as e:
+                        exception = e
+                        continue
+                    _raise_wrapfail(teardown, "has second yield")  # type: ignore[arg-type]
+    
+                if exception is not None:
+>                   raise exception.with_traceback(exception.__traceback__)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\pluggy\_callers.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+hook_name = 'stop_step'
+hook_impls = [<HookImpl plugin_name='2417369104704', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D66D4140>>, <HookImpl plugin_name='2417403688288', plugin=<allure_pytest.listener.AllureListener object at 0x00000232D87CF560>>]
+caller_kwargs = {'exc_tb': <traceback object at 0x00000232D89E6300>, 'exc_type': <class 'KeyError'>, 'exc_val': KeyError('1e0d3f9b-eef1-4c30-9353-a28d27816061'), 'title': '请求数据：e175700a-a7f6-4b9a-9e8d-7a418d2b2ae3', ...}
+firstresult = False
+
+    def _multicall(
+        hook_name: str,
+        hook_impls: Sequence[HookImpl],
+        caller_kwargs: Mapping[str, object],
+        firstresult: bool,
+    ) -> object | list[object]:
+        """Execute a call into multiple python functions/methods and return the
+        result(s).
+    
+        ``caller_kwargs`` comes from HookCaller.__call__().
+        """
+        __tracebackhide__ = True
+        results: list[object] = []
+        exception = None
+        only_new_style_wrappers = True
+        try:  # run impl and wrapper setup functions in a loop
+            teardowns: list[Teardown] = []
+            try:
+                for hook_impl in reversed(hook_impls):
+                    try:
+                        args = [caller_kwargs[argname] for argname in hook_impl.argnames]
+                    except KeyError:
+                        for argname in hook_impl.argnames:
+                            if argname not in caller_kwargs:
+                                raise HookCallError(
+                                    f"hook call must provide argument {argname!r}"
+                                )
+    
+                    if hook_impl.hookwrapper:
+                        only_new_style_wrappers = False
+                        try:
+                            # If this cast is not valid, a type error is raised below,
+                            # which is the desired response.
+                            res = hook_impl.function(*args)
+                            wrapper_gen = cast(Generator[None, Result[object], None], res)
+                            next(wrapper_gen)  # first yield
+                            teardowns.append((wrapper_gen, hook_impl))
+                        except StopIteration:
+                            _raise_wrapfail(wrapper_gen, "did not yield")
+                    elif hook_impl.wrapper:
+                        try:
+                            # If this cast is not valid, a type error is raised below,
+                            # which is the desired response.
+                            res = hook_impl.function(*args)
+                            function_gen = cast(Generator[None, object, object], res)
+                            next(function_gen)  # first yield
+                            teardowns.append(function_gen)
+                        except StopIteration:
+                            _raise_wrapfail(function_gen, "did not yield")
+                    else:
+>                       res = hook_impl.function(*args)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\pluggy\_callers.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_pytest.listener.AllureListener object at 0x00000232D66D4140>
+uuid = '1e8e4ee8-0a49-46e3-aed2-10f0d45a8b68', exc_type = <class 'KeyError'>
+exc_val = KeyError('1e0d3f9b-eef1-4c30-9353-a28d27816061')
+exc_tb = <traceback object at 0x00000232D89E6300>
+
+    @allure_commons.hookimpl
+    def stop_step(self, uuid, exc_type, exc_val, exc_tb):
+>       self.allure_logger.stop_step(uuid,
+                                     stop=now(),
+                                     status=get_status(exc_val),
+                                     statusDetails=get_status_details(exc_type, exc_val, exc_tb))
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_pytest\listener.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.AllureReporter object at 0x00000232D856C830>
+uuid = '1e8e4ee8-0a49-46e3-aed2-10f0d45a8b68'
+kwargs = {'status': 'broken', 'statusDetails': StatusDetails(known=None, flaky=None, message="KeyError: '1e0d3f9b-eef1-4c30-935...urn self.thread_context.__getitem__(item)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'), 'stop': 1739437165589}
+
+    def stop_step(self, uuid, **kwargs):
+        if uuid in self._orphan_items:
+            self._orphan_items.remove(uuid)
+        else:
+>           self._update_item(uuid, **kwargs)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.AllureReporter object at 0x00000232D856C830>
+uuid = '1e8e4ee8-0a49-46e3-aed2-10f0d45a8b68'
+kwargs = {'status': 'broken', 'statusDetails': StatusDetails(known=None, flaky=None, message="KeyError: '1e0d3f9b-eef1-4c30-935...urn self.thread_context.__getitem__(item)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n'), 'stop': 1739437165589}
+
+    def _update_item(self, uuid, **kwargs):
+>       item = self._items[uuid] if uuid else self._items[next(reversed(self._items))]
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.ThreadContextItems object at 0x00000232D86207D0>
+item = '1e8e4ee8-0a49-46e3-aed2-10f0d45a8b68'
+
+    def __getitem__(self, item):
+>       return self.thread_context.__getitem__(item)
+E       KeyError: '1e8e4ee8-0a49-46e3-aed2-10f0d45a8b68'
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:33: KeyError
+
+During handling of the above exception, another exception occurred:
+
+self = <allure_commons._allure.StepContext object at 0x00000232D89A7710>
+exc_type = <class 'KeyError'>
+exc_val = KeyError('1e8e4ee8-0a49-46e3-aed2-10f0d45a8b68')
+exc_tb = <traceback object at 0x00000232D8909E80>
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+>       plugin_manager.hook.stop_step(uuid=self.uuid, title=self.title, exc_type=exc_type, exc_val=exc_val,
+                                      exc_tb=exc_tb)
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\_allure.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_pytest\listener.py:44: in stop_step
+    self.allure_logger.stop_step(uuid,
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:139: in stop_step
+    self._update_item(uuid, **kwargs)
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:62: in _update_item
+    item = self._items[uuid] if uuid else self._items[next(reversed(self._items))]
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.ThreadContextItems object at 0x00000232D86207D0>
+item = '14998f1c-bca7-4c41-8d38-56f2cdf64d07'
+
+    def __getitem__(self, item):
+>       return self.thread_context.__getitem__(item)
+E       KeyError: '14998f1c-bca7-4c41-8d38-56f2cdf64d07'
+
+..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\allure_commons\reporter.py:33: KeyError

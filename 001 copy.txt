@@ -1,0 +1,135 @@
+self = <test_caes.test_001.Test object at 0x104fc0cb0>, case = ['公开', 'a1', '招标人登录', '', 'etbuser/login', 'P1', ...]
+get_db = <common.db.DB object at 0x10769b530>, env_url = ['http://trade.jy-test.zszc.jianshicha.cn/etbApi/', 'test']
+unique_uuid = '6cabf932-b77a-4114-b0bd-292c9628bbc9'
+
+    @allure.step
+    def test_001(self, case, get_db, env_url, unique_uuid):
+        with StepContext("Test Execution", {}):
+            logging.debug(case)
+            with allure.step(f"请求数据：{unique_uuid}"):
+>               response = (Api_Request.api_data(case, env_url))
+
+test_caes/test_001.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+common/api_request.py:80: in api_data
+    res = Api_Request().api_request(urls, proxies, method, parametric_key, header_ex, (data), file_obj)
+common/api_request.py:120: in api_request
+    with allure.step('请求数据：'):
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/_allure.py:182: in __exit__
+    plugin_manager.hook.stop_step(uuid=self.uuid, title=self.title, exc_type=exc_type, exc_val=exc_val,
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pluggy/_hooks.py:513: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_pytest/listener.py:54: in stop_step
+    self.allure_logger.stop_step(uuid,
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:139: in stop_step
+    self._update_item(uuid, **kwargs)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:62: in _update_item
+    item = self._items[uuid] if uuid else self._items[next(reversed(self._items))]
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.ThreadContextItems object at 0x1040bf4d0>, item = 'b09232a5-b695-4623-a3ca-ed77fb878345'
+
+    def __getitem__(self, item):
+>       return self.thread_context.__getitem__(item)
+E       KeyError: 'b09232a5-b695-4623-a3ca-ed77fb878345'
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:33: KeyError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_caes.test_001.Test object at 0x104fc0cb0>, case = ['公开', 'a1', '招标人登录', '', 'etbuser/login', 'P1', ...]
+get_db = <common.db.DB object at 0x10769b530>, env_url = ['http://trade.jy-test.zszc.jianshicha.cn/etbApi/', 'test']
+unique_uuid = '6cabf932-b77a-4114-b0bd-292c9628bbc9'
+
+    @allure.step
+    def test_001(self, case, get_db, env_url, unique_uuid):
+        with StepContext("Test Execution", {}):
+            logging.debug(case)
+>           with allure.step(f"请求数据：{unique_uuid}"):
+
+test_caes/test_001.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/_allure.py:182: in __exit__
+    plugin_manager.hook.stop_step(uuid=self.uuid, title=self.title, exc_type=exc_type, exc_val=exc_val,
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pluggy/_hooks.py:513: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_pytest/listener.py:54: in stop_step
+    self.allure_logger.stop_step(uuid,
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:139: in stop_step
+    self._update_item(uuid, **kwargs)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:62: in _update_item
+    item = self._items[uuid] if uuid else self._items[next(reversed(self._items))]
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.ThreadContextItems object at 0x1040bf4d0>, item = '18497551-6902-45df-8eb8-f4cab75097b4'
+
+    def __getitem__(self, item):
+>       return self.thread_context.__getitem__(item)
+E       KeyError: '18497551-6902-45df-8eb8-f4cab75097b4'
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:33: KeyError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_caes.test_001.Test object at 0x104fc0cb0>, case = ['公开', 'a1', '招标人登录', '', 'etbuser/login', 'P1', ...]
+get_db = <common.db.DB object at 0x10769b530>, env_url = ['http://trade.jy-test.zszc.jianshicha.cn/etbApi/', 'test']
+unique_uuid = '6cabf932-b77a-4114-b0bd-292c9628bbc9'
+
+    @allure.step
+    def test_001(self, case, get_db, env_url, unique_uuid):
+>       with StepContext("Test Execution", {}):
+
+test_caes/test_001.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/_allure.py:182: in __exit__
+    plugin_manager.hook.stop_step(uuid=self.uuid, title=self.title, exc_type=exc_type, exc_val=exc_val,
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pluggy/_hooks.py:513: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_pytest/listener.py:54: in stop_step
+    self.allure_logger.stop_step(uuid,
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:139: in stop_step
+    self._update_item(uuid, **kwargs)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:62: in _update_item
+    item = self._items[uuid] if uuid else self._items[next(reversed(self._items))]
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.ThreadContextItems object at 0x1040bf4d0>, item = 'af7ea962-ce23-44a8-999f-027d250f3e65'
+
+    def __getitem__(self, item):
+>       return self.thread_context.__getitem__(item)
+E       KeyError: 'af7ea962-ce23-44a8-999f-027d250f3e65'
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:33: KeyError
+
+During handling of the above exception, another exception occurred:
+
+self = <allure_commons._allure.StepContext object at 0x107602000>, exc_type = <class 'KeyError'>
+exc_val = KeyError('af7ea962-ce23-44a8-999f-027d250f3e65'), exc_tb = <traceback object at 0x11013ce00>
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+>       plugin_manager.hook.stop_step(uuid=self.uuid, title=self.title, exc_type=exc_type, exc_val=exc_val,
+                                      exc_tb=exc_tb)
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/_allure.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_pytest/listener.py:54: in stop_step
+    self.allure_logger.stop_step(uuid,
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:139: in stop_step
+    self._update_item(uuid, **kwargs)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:62: in _update_item
+    item = self._items[uuid] if uuid else self._items[next(reversed(self._items))]
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <allure_commons.reporter.ThreadContextItems object at 0x1040bf4d0>, item = '0c213685-0290-4b8e-965f-250095cf3d2b'
+
+    def __getitem__(self, item):
+>       return self.thread_context.__getitem__(item)
+E       KeyError: '0c213685-0290-4b8e-965f-250095cf3d2b'
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/allure_commons/reporter.py:33: KeyError

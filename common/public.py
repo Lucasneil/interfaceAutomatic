@@ -63,7 +63,7 @@ class ChangeVariables:
             if key == "noticeSendTime":
                 pool[key] = str(self.func_times(20)['seconds_later'])
             else:
-                pool[key] = str(self.func_times(20)['datetimes'])
+                pool[key] = str(self.func_times(30)['datetimes'])
             self.extra_pool[key] = pool[key]
 
 
