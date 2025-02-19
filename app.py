@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, abort, request, jsonify, render_template, send_from_directory
 import logging
 import pytest
 import allure
@@ -334,7 +334,7 @@ def change_conf(data,task_id):
         yaml.dump(yaml_data, f, allow_unicode=True)
         return temp_config_path
     
-def process_task(task_id, data):
+def process_task(task_id, data, host):
     ExchangeData.load_config(task_id)
     # 1. 生成任务专属配置文件
     temp_config_path = change_conf(data, task_id)  # 修改后的 change_conf 返回临时路径
@@ -353,7 +353,7 @@ def process_task(task_id, data):
     logging.debug(responseUser)
 
 
-    if responseUser == "登录成功":
+    if responseUser == "登录成功" and firstAprUser != '':
         logging.debug("招标人登录成功")
         response2 = requests.post(url = url, json = data2)
         logging.debug(response2.json())
@@ -368,16 +368,44 @@ def process_task(task_id, data):
                 result = run.run(task_id)
                 # print(result)
                 logger.debug(result)
+            report_dir = f'http://{host}/report/report_{task_id}.html'
 
             # 更新任务状态
             task_status[task_id] = {
                 'status': 'completed',
                 'result': f'提交的数据已处理完成',
-                'log': output
+                'log': output,
+                'allure_report_url': report_dir
+
             }
 
             # 通过WebSocket发送日志
             socketio.emit('log', {'data': output}, room=task_id)
+        
+        elif responseUser == '登录成功' and firstAprUser == '':
+            # 3. 执行测试
+            f = io.StringIO()
+            output = f.getvalue()
+            with redirect_stdout(f):
+                # with run_lock:
+                result = run.run(task_id)
+                # print(result)
+                logger.debug(result)
+            report_dir = f'http://{host}/report/report_{task_id}.html'
+
+            # 更新任务状态
+            task_status[task_id] = {
+                'status': 'completed',
+                'result': f'提交的数据已处理完成',
+                'log': output,
+                'allure_report_url': report_dir
+
+            }
+
+            # 通过WebSocket发送日志
+            socketio.emit('log', {'data': output}, room=task_id)
+            
+        
         else:
             # 更新任务状态
             task_status[task_id] = {
@@ -405,8 +433,10 @@ def test_submit():
     task_status[task_id] = {'status': 'processing', 'log': ''}
     temp_config_path = f'./config/config_{task_id}.yaml'
     shutil.copy('./config/config.yaml', temp_config_path)
+    host = request.host
+    
     # 启动后台线程处理任务
-    threading.Thread(target=process_task, args=(task_id,data)).start()
+    threading.Thread(target=process_task, args=(task_id,data,host)).start()
     #print("操作excel")
 
     return jsonify({'task_id': task_id})
@@ -417,6 +447,13 @@ def get_status(task_id):
     return jsonify(status)
     pass
 
+@app.route('/report/<filename>')
+def send_report(filename):
+    report_path = os.path.join('./report', filename)
+    if not os.path.exists(report_path):
+        logging.error(f"Report file not found: {report_path}")
+        abort(404)  # Return a 404 error if the file does not exist
+    return send_from_directory('./report', filename)
 @socketio.on('join')
 def on_join(data):
     task_id = data['task_id']

@@ -26,9 +26,9 @@ class AssertApi():
 
         # 后置提取参数
         extra = case[-4]  # 后置提取参数到参数池中
-        ExchangeData.allure_step_text('提取参数路径：', extra)  # 显示提取参数路径
+        #ExchangeData.allure_step_text('提取参数路径：', extra)  # 显示提取参数路径
         ExchangeData.Extract(self.re_sql_data, extra)
-        ExchangeData.extra_pool_allure()  # 显示参数池数
+        #ExchangeData.extra_pool_allure()  # 显示参数池数
         Logger.info('提取参数路径：%s' % extra)
         Logger.info('参数池：%s' % ExchangeData.get_extra_pool())  # 使用 get_extra_pool 方法
 
@@ -101,19 +101,18 @@ class AssertApi():
             result_all = [False]
             result_dic_list.append({"result": "没有添加断言,无断言用例标记失败，请添加断言判断用例", })
 
-        with allure.step('断言：%s' % (False not in result_all)):
+        #with allure.step('断言：%s' % (False not in result_all)):
             Logger.info(self.re_sql_data)
-            allure.attach(
-                json.dumps(self.re_sql_data, ensure_ascii=False, indent=4),
-                're_sql_data',
-                allure.attachment_type.JSON,
-            )
+            
+            json.dumps(self.re_sql_data, ensure_ascii=False, indent=4),
+            
+            
             for result_dic in result_dic_list:
-                allure.attach(
-                    json.dumps(result_dic, ensure_ascii=False, indent=4).replace("\\", ''),
-                    "断言：%s：" % (result_dic.get('测试结果', False)),
-                    allure.attachment_type.JSON,
-                )
+                
+                json.dumps(result_dic, ensure_ascii=False, indent=4).replace("\\", ''),
+                "断言：%s：" % (result_dic.get('测试结果', False)),
+                
+                
 
         Logger.info(result_all)
         self.re_sql_data.clear()
@@ -124,26 +123,21 @@ class AssertApi():
             sql_srt = case[-3]
             if sql_srt != "":
                 sql_srt = ExchangeData.rep_expr(sql_srt, return_type='srt')
+                for n, sql in enumerate(sql_srt.split(";")):
+                    Logger.info([n, sql])
+                    try:
+                        data_sql_dic = get_db.execute_sql(sql)
+                    except Exception as e:
+                        Logger.error(f'数据库查询失败！（{e}）')
+                        data_sql_dic = {'message': "数据库查询失败！", "error": f"{e}"}
+                    Logger.info(data_sql_dic)
+                    Logger.info(type(data_sql_dic))
+                    # ExchangeData.extra_pool.update({"sql_%s_data"%n:data_sql_dic})
+                    ExchangeData.get_extra_pool().update(data_sql_dic)  # 使用 get_extra_pool 方法
+                    
+                    self.re_sql_data.update({"sql_%s_data" % n: data_sql_dic})
+                    Logger.info(ExchangeData.get_extra_pool())  # 使用 get_extra_pool 方法
 
-                with allure.step('执行sql：'):
-                    for n, sql in enumerate(sql_srt.split(";")):
-                        Logger.info([n, sql])
-                        try:
-                            data_sql_dic = get_db.execute_sql(sql)
-                        except Exception as e:
-                            Logger.error(f'数据库查询失败！（{e}）')
-                            data_sql_dic = {'message': "数据库查询失败！", "error": f"{e}"}
-                        Logger.info(data_sql_dic)
-                        Logger.info(type(data_sql_dic))
-                        # ExchangeData.extra_pool.update({"sql_%s_data"%n:data_sql_dic})
-                        ExchangeData.get_extra_pool().update(data_sql_dic)  # 使用 get_extra_pool 方法
-
-                        self.re_sql_data.update({"sql_%s_data" % n: data_sql_dic})
-                        Logger.info(ExchangeData.get_extra_pool())  # 使用 get_extra_pool 方法
-                        try:
-                            allure_data = json.dumps({"sql_%s_data" % n: data_sql_dic}, ensure_ascii=False, indent=4)
-                        except Exception as e:
-                            allure_data = json.dumps("sql_%s_data:'%s'" % (n, data_sql_dic), ensure_ascii=False, indent=4)
-                            Logger.warning('sql查询数据转换插入allure报告数据，出现异常！！（%s）' % e)
-
-                        allure.attach(allure_data, sql, allure.attachment_type.JSON, )
+                
+                    
+                    

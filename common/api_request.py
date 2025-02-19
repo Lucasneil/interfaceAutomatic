@@ -30,7 +30,7 @@ class Api_Request():
             latency_time,
         ) = cases
         Logger.info(f'用例名称：{case_mod}-{case_id}-{case_title}')
-        allure.dynamic.story(case_mod)
+        #allure.dynamic.story(case_mod)
         time.sleep(1)
         Condition().skip_if(cases)
 
@@ -42,7 +42,7 @@ class Api_Request():
         })
 
         read_file = get_readfile_instance()  # 获取 ReadFile 实例
-        allure.dynamic.severity(read_file.read_config('$..cor_rel_case_severity')[case_severity])
+        #allure.dynamic.severity(read_file.read_config('$..cor_rel_case_severity')[case_severity])
 
         request_headers = str(read_file.read_config('$.request_headers'))  # 获取配置文件中的请求头
         request_parameters = str(read_file.read_config('$.request_parameters'))  # 获取配置文件中的请求参数
@@ -62,7 +62,7 @@ class Api_Request():
 
         print("更新完成后的参数是" + str(data))
 
-        allure.dynamic.title(case_title)
+        #allure.dynamic.title(case_title)
 
         pattern = re.compile(r'^((https|http|ftp|rtsp|mms)?:\/\/)[^\s]+')
         if (pattern.search(path)) == None:  # 判断读取的地址是否有前缀地址http://192.168.1.153:8562
@@ -72,8 +72,8 @@ class Api_Request():
         else:
             urls = path  # 有前缀使用读取的完整地址
 
-        allure.dynamic.description(
-            "【用例名称】：%s_%s\n\n【请求地址】：%s\n\n【请求参数】：%s" % (case_mod, case_title, urls, data))
+        '''allure.dynamic.description(
+            "【用例名称】：%s_%s\n\n【请求地址】：%s\n\n【请求参数】：%s" % (case_mod, case_title, urls, data))'''
         proxies = {'http': 'http://127.0.0.1:8080', 'https': 'https://127.0.0.1:8080'}
 
         # 使用代理方式
@@ -117,12 +117,12 @@ class Api_Request():
             "上传文件": file_obj,
         }
 
-        with allure.step('请求数据：'):
+        '''with allure.step('请求数据：'):
             allure.attach(
                 json.dumps(req_info, ensure_ascii=False, indent=4),
                 "附件内容",
                 allure.attachment_type.JSON,
-            )
+            )'''
 
         Logger.info('接口地址：%s' % url)
         Logger.info('请求头：%s' % header)
@@ -156,11 +156,11 @@ class Api_Request():
 
         Logger.info('返回响应：%s' % response)
 
-        with allure.step('响应数据：'):
+        '''with allure.step('响应数据：'):
             allure.attach(
                 json.dumps(response, ensure_ascii=False, indent=4),
                 "附件内容",
                 allure.attachment_type.JSON,
-            )
+            )'''
 
         return response

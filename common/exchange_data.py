@@ -146,7 +146,7 @@ class ExchangeData:
 
         return content
 
-    @classmethod
+    '''@classmethod
     def extra_pool_allure(cls):
         """将当前线程的 extra_pool 写入Allure报告"""
         current_pool = cls.get_extra_pool()
@@ -155,9 +155,9 @@ class ExchangeData:
                 json.dumps(current_pool, ensure_ascii=False, indent=4),
                 "附件内容",
                 allure.attachment_type.JSON,
-            )
+            )'''
 
-    @classmethod
+    '''@classmethod
     def allure_step_text(cls, step_text: str, extra: dict or str, doc="附件内容"):
         if extra == "":
             extra = {}
@@ -172,7 +172,7 @@ class ExchangeData:
                 json.dumps((extra), ensure_ascii=False, indent=4).replace("\\", ''),
                 f"{doc}",
                 allure.attachment_type.JSON,
-            )
+            )'''
 
     @classmethod
     def post_pytest_summary(cls, result_data_test):
