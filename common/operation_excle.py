@@ -1,18 +1,11 @@
 import logging
-
-from openpyxl.styles import Alignment
-from openpyxl.styles import Border, Side
-from openpyxl.utils import get_column_letter
-from openpyxl.styles import Font  # 导入字体模块
 import openpyxl, string
-from common.logger import Logger
-from common.config_loader import ConfigLoader
 
 
 class operation_excle:
 
     @classmethod
-    def read_excel(cls, file_name, case_severity_list,inviteType):
+    def read_excel(cls, file_name, case_severity_list,inviteType,ifSupportBlindBid):
         
 
         wb = openpyxl.load_workbook(file_name)
@@ -22,11 +15,15 @@ class operation_excle:
         logging.debug("开始操作excel！！！！！！！")
         logging.debug(sheet_names)
         logging.debug(inviteType)
-        if inviteType == '1':
+        if inviteType == '1' and ifSupportBlindBid == 'true':
+            title = "暗标"
+            ws = wb[title]  # 打开指定页
+            logging.debug("打开的是暗标sheet")
+        elif inviteType == '1' and ifSupportBlindBid == 'false':
             title = "公开"
             ws = wb[title]  # 打开指定页
             logging.debug("打开的是公开sheet")
-            print("打开的是公开sheet")
+            
         else:
             title = "邀请"
             ws = wb[title]  # 打开指定页

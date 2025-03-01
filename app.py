@@ -115,34 +115,63 @@ def change_conf(data,task_id):
     tenderOrganizeForm = tenderOrganizeForm_mapping.get(tenderOrganizeForm)
     logging.debug("tenderOrganizeForm最终的值是" + tenderOrganizeForm)
     
+    # 项目选择字典
+    project_mapping = {
+        '产品化-三方': 'hhttp://trade.sanfang-test.zszc.jianshicha.cn/etbApi/',
+        '涿州': 'http://trade.zz-test.zszc.jianshicha.cn/etbApi/',
+        '产品化-企采': 'http://trade.zccp-test.zszc.jianshicha.cn/api/',
+        '金湡': 'http://trade.jy-test.zszc.jianshicha.cn/etbApi/',
+        '清苑': 'http://trade.qy-test.zszc.jianshicha.cn/etbApi/',
+        '无极': 'http://trade.wj-test.zszc.jianshicha.cn/etbApi/'
+
+    }
+    # 匹配项目对应的测试地址
+    if proUrl != '':
+        logging.debug("proUrl不是空的")
+        server = proUrl
+        logging.debug(proUrl)
+    else:
+        logging.debug("proUrl是空的")
+        server = project_mapping.get(projectChoice)
+        logging.debug(server)
     # 根据传入的项目类型，匹配excel-case的路径
-    if projectType == '企业采购' and tenderOrganizeForm == '1':
-        if projectChoice == '产品化-三方':
-            case_dir = './data/env_test/case_excle/sf'
-        elif projectChoice == '产品化-企采':
-            case_dir = './data/env_test/case_excle/qc'
+    if server == 'http://trade.zccp-test.zszc.jianshicha.cn/api/':
+        if tenderOrganizeForm == '1':
+            case_dir = './data/env_test/case_excle/Productization_trade'
         else:
-            case_dir = './data/env_test/case_excle/CompanyPurcharsZX'
-    elif projectType == '企业采购' and tenderOrganizeForm == '2':
-        case_dir = './data/env_test/case_excle/CompanyPurcharsWT'
+            case_dir = './data/env_test/case_excle/Productization_tradeWT'
+    else:
+        if projectType == '企业采购' and tenderOrganizeForm == '1':
+            if projectChoice == '产品化-三方':
+                case_dir = './data/env_test/case_excle/sf'
+            elif projectChoice == '产品化-企采':
+                case_dir = './data/env_test/case_excle/Productization_trade'
+            else:
+                case_dir = './data/env_test/case_excle/CompanyPurcharsZX'
+        elif projectType == '企业采购' and tenderOrganizeForm == '2':
+            if projectChoice == '产品化-企采':
+                case_dir = './data/env_test/case_excle/Productization_tradeWT'
+            else:
+                case_dir = './data/env_test/case_excle/CompanyPurcharsWT'
+        
+        if projectType == '政府采购' and tenderOrganizeForm == '1':
+            if projectChoice == '产品化-三方':
+                case_dir = './data/env_test/case_excle/sf'
+            elif projectChoice == '产品化-企采':
+                case_dir = './data/env_test/case_excle/qc'
+            else:
+                case_dir = './data/env_test/case_excle/GovermentPurcharsZX'
+        elif projectType == '政府采购' and tenderOrganizeForm == '2':
+            case_dir = './data/env_test/case_excle/GovermentPurcharsWT'
+        
+        if projectType == '工程建设' and tenderOrganizeForm == '1':
+            if projectChoice == '产品化-三方':
+                case_dir = './data/env_test/case_excle/sf'
+            elif projectChoice == '产品化-企采':
+                case_dir = './data/env_test/case_excle/qc'
+            else:
+                case_dir = './data/env_test/case_excle/zz'
     
-    if projectType == '政府采购' and tenderOrganizeForm == '1':
-        if projectChoice == '产品化-三方':
-            case_dir = './data/env_test/case_excle/sf'
-        elif projectChoice == '产品化-企采':
-            case_dir = './data/env_test/case_excle/qc'
-        else:
-            case_dir = './data/env_test/case_excle/GovermentPurcharsZX'
-    elif projectType == '政府采购' and tenderOrganizeForm == '2':
-        case_dir = './data/env_test/case_excle/GovermentPurcharsWT'
-    
-    if projectType == '工程建设' and tenderOrganizeForm == '1':
-        if projectChoice == '产品化-三方':
-            case_dir = './data/env_test/case_excle/sf'
-        elif projectChoice == '产品化-企采':
-            case_dir = './data/env_test/case_excle/qc'
-        else:
-            case_dir = './data/env_test/case_excle/zz'
 
     #根据传入的招标文件信息做后续处理，根据传入的值进行相应转换
     ifSupportSmallMicro = data.get('ifSupportSmallMicro')
@@ -231,16 +260,7 @@ def change_conf(data,task_id):
         tfPrice = "0"
         
 
-    # 项目选择字典
-    project_mapping = {
-        '产品化-三方': 'hhttp://trade.sanfang-test.zszc.jianshicha.cn/etbApi/',
-        '涿州': 'http://trade.zz-test.zszc.jianshicha.cn/etbApi/',
-        '产品化-企采': 'http://trade.sd-test.zszc.jianshicha.cn/api/',
-        '金湡': 'http://trade.jy-test.zszc.jianshicha.cn/etbApi/',
-        '清苑': 'http://trade.qy-test.zszc.jianshicha.cn/etbApi/',
-        '无极': 'http://trade.wj-test.zszc.jianshicha.cn/etbApi/'
 
-    }
     # 招标方式字典
     purchaseMode_mapping = {
         '公开招标': '1',
@@ -272,17 +292,10 @@ def change_conf(data,task_id):
         '服务': 'D03',
         '工程': 'D02'
    }
-    # 匹配项目对应的测试地址
-    if proUrl != '':
-        logging.debug("proUrl不是空的")
-        server = proUrl
-        logging.debug(proUrl)
-    else:
-        logging.debug("proUrl是空的")
-        server = project_mapping.get(projectChoice)
-        logging.debug(server)
+
     # 匹配项目对应的招标方式、组织形式等
     purchaseMode = purchaseMode_mapping.get(purchaseMode)
+    purchas_project = purchaseProjectType
     pqrMode = pqrMode_mapping.get(pqrMode)
     evaluation_method = evaluation_method_mapping.get(evaluation_method)
     inviteType = inviteType_mapping.get(inviteType)
@@ -344,14 +357,17 @@ def process_task(task_id, data, host):
     password = extra_pool['password']
     firstAprUser = extra_pool['firstAprUser']
     firstAprPsw = extra_pool['firstAprPsw']
-    url = extra_pool['url'] + 'etbuser/login'
+    conf_url = extra_pool['url']
+    if conf_url == 'http://trade.zccp-test.zszc.jianshicha.cn/api/':
+        url = conf_url + 'etbuser/ztkLogin'
+    else:
+        url = extra_pool['url'] + 'etbuser/login'
     data1 = {"username" : username,"password" : password, "identity": "1"}
     data2 = {"username" : firstAprUser,"password" : firstAprPsw, "identity": "1"}
     response1 = requests.post(url = url, json = data1)
     logging.debug(response1.json())
     responseUser = response1.json().get('msg')
-    logging.debug(responseUser)
-
+    logging.debug('招标人登录的结果是' + responseUser)
 
     if responseUser == "登录成功" and firstAprUser != '':
         logging.debug("招标人登录成功")
@@ -381,37 +397,37 @@ def process_task(task_id, data, host):
 
             # 通过WebSocket发送日志
             socketio.emit('log', {'data': output}, room=task_id)
-        
-        elif responseUser == '登录成功' and firstAprUser == '':
-            # 3. 执行测试
-            f = io.StringIO()
-            output = f.getvalue()
-            with redirect_stdout(f):
-                # with run_lock:
-                result = run.run(task_id)
-                # print(result)
-                logger.debug(result)
-            report_dir = f'http://{host}/report/report_{task_id}.html'
-
-            # 更新任务状态
-            task_status[task_id] = {
-                'status': 'completed',
-                'result': f'提交的数据已处理完成',
-                'log': output,
-                'allure_report_url': report_dir
-
-            }
-
-            # 通过WebSocket发送日志
-            socketio.emit('log', {'data': output}, room=task_id)
-            
-        
         else:
             # 更新任务状态
             task_status[task_id] = {
                 'status': 'completed',
                 'result': f'审批人用户名或密码错误'
             }
+        
+    elif responseUser == '登录成功' and firstAprUser == '':
+        logging.debug("没有审批人信息，直接执行后续操作")
+        # 3. 执行测试
+        f = io.StringIO()
+        output = f.getvalue()
+        with redirect_stdout(f):
+            # with run_lock:
+            result = run.run(task_id)
+            # print(result)
+            logger.debug(result)
+        report_dir = f'http://{host}/report/report_{task_id}.html'
+        
+        # 更新任务状态
+        task_status[task_id] = {
+            'status': 'completed',
+            'result': f'提交的数据已处理完成',
+            'log': output,
+            'allure_report_url': report_dir
+            
+        }
+        
+        # 通过WebSocket发送日志
+        socketio.emit('log', {'data': output}, room=task_id)
+
     else:
         # 更新任务状态
         task_status[task_id] = {

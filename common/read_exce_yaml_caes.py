@@ -59,12 +59,11 @@ def get_excle_all_caes(excle_file, task_id=None):  # 获取excle文件中的所�
         print(excle_path_all, "all路径")
         try:
             print("开始调用read——excel里的operation")
-            #data = ConfigLoader.load_config()
             inviteType = readfile.read_config('$..inviteType')
-            #inviteType = ReadFile.read_config('$..inviteType')
+            ifSupportBlindBid = readfile.read_config('$..ifSupportBlindBid')
             logging.debug("read-excel里读取到的inviteType")
             logging.debug(inviteType)
-            one_excle_case = operation_excle.read_excel(one_excle_path,['P1'],inviteType)
+            one_excle_case = operation_excle.read_excel(one_excle_path,['P1'],inviteType,ifSupportBlindBid)
         except Exception as e:
             Logger.warning('这个文件【%s】无法读取,原因:“%s”,关闭excle再试试…… ' % (one_excle_path, e))
             one_excle_case = []

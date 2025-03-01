@@ -50,19 +50,7 @@ class ExchangeData:
                 return extra_pool
         except Exception as e:
             raise ValueError(f"Failed to load config for task {task_id}: {e}")
-        #current_file_path = os.path.abspath(__file__)
-        #current_dir = os.path.dirname(current_file_path)
-        #yaml_file_path = f"{str(Path(__file__).parent.parent)}/config/config.yaml"
-        #with open(config_path, 'r') as f:
-            #config = yaml.safe_load(f)
-            #cls._thread_local.extra_pool = config['extra_pool']
-        #config_data = cls.read_config_file(yaml_file_path)
 
-        #extra_pool_yaml = config_data['extra_pool']
-
-        # 存放提取参数的池子
-        #cls.extra_pool = {}
-        #cls.extra_pool.update(extra_pool_yaml)
     @classmethod
     def get_task_id(cls):
         """获取当前线程的 task_id"""
@@ -146,33 +134,7 @@ class ExchangeData:
 
         return content
 
-    '''@classmethod
-    def extra_pool_allure(cls):
-        """将当前线程的 extra_pool 写入Allure报告"""
-        current_pool = cls.get_extra_pool()
-        with allure.step('参数池数据：'):
-            allure.attach(
-                json.dumps(current_pool, ensure_ascii=False, indent=4),
-                "附件内容",
-                allure.attachment_type.JSON,
-            )'''
 
-    '''@classmethod
-    def allure_step_text(cls, step_text: str, extra: dict or str, doc="附件内容"):
-        if extra == "":
-            extra = {}
-        else:
-            try:
-                extra = eval(extra)
-            except:
-                extra = extra
-
-        with allure.step(f'{step_text}：'):
-            allure.attach(
-                json.dumps((extra), ensure_ascii=False, indent=4).replace("\\", ''),
-                f"{doc}",
-                allure.attachment_type.JSON,
-            )'''
 
     @classmethod
     def post_pytest_summary(cls, result_data_test):

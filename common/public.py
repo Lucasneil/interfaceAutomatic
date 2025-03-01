@@ -30,7 +30,7 @@ class ChangeVariables:
         try:
             if isinstance(object, int) and object >= 0:
                 now = datetime.now()
-                seconds_later = (now + timedelta(seconds=300)).replace(microsecond=0)
+                seconds_later = (now + timedelta(seconds=120)).replace(microsecond=0)
                 one_day = timedelta(days=object)
                 one_day_later = int((now + one_day).timestamp())
                 datetimes = datetime.fromtimestamp(one_day_later)

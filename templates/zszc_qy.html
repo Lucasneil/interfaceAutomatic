@@ -52,7 +52,7 @@
     </div>
 
     <div id="app" class="container">
-        <div class="header">接口自动化测试平台</div>
+        <div class="header">数字交易-接口自动化测试平台</div>
 
         <form method="POST" action="/submit">
             <!-- 请选择要执行的项目 -->
@@ -160,7 +160,7 @@
                     <label><input type="checkbox" name="ifSyndicatedFlag" value="0" onclick='handleClick(this);' /> <span> 联合体</span></label>
                     <label><input type="checkbox" name="ifSupportBlindBid" value="0" onclick='blindClick(this);' /> <span> 暗标</span></label>
                     <label><input type="checkbox" name="ifJudgesConfirmWinBidder" value="0" onclick='handleClick(this);' /> <span> 评定分离</span></label>
-                    <label><input type="checkbox" name="ifUseCa" value="0" onclick='handleClick(this);' /> <span> 是否CA</span></label>
+
                     <label><input type="checkbox" name="ifFee" value="0" onclick='handleClick(this);' /> <span> 是否费用</span></label>
 
                 </div>
@@ -206,7 +206,6 @@
                 const ifSyndicatedFlag = document.querySelector('input[name="ifSyndicatedFlag"]').value;
                 const ifSupportBlindBid = document.querySelector('input[name="ifSupportBlindBid"]').value;
                 const ifJudgesConfirmWinBidder = document.querySelector('input[name="ifJudgesConfirmWinBidder"]').value;
-                const ifUseCa = document.querySelector('input[name="ifUseCa"]').value;
                 const ifFee = document.querySelector('input[name="ifFee"]').value;
 
 
@@ -256,7 +255,6 @@
                 formData.append("purchaseProjectType", purchaseProjectType);
                 formData.append("firstAprUser", firstAprUser);
                 formData.append("firstAprPsw", firstAprPsw);
-                formData.append("ifUseCa", firstAprPsw);
                 formData.append("ifFee", ifFee);
                 formData.append("projectType", projectType.value);
                 formData.append("proUrl", proUrl);

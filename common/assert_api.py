@@ -26,9 +26,7 @@ class AssertApi():
 
         # 后置提取参数
         extra = case[-4]  # 后置提取参数到参数池中
-        #ExchangeData.allure_step_text('提取参数路径：', extra)  # 显示提取参数路径
         ExchangeData.Extract(self.re_sql_data, extra)
-        #ExchangeData.extra_pool_allure()  # 显示参数池数
         Logger.info('提取参数路径：%s' % extra)
         Logger.info('参数池：%s' % ExchangeData.get_extra_pool())  # 使用 get_extra_pool 方法
 
@@ -101,7 +99,6 @@ class AssertApi():
             result_all = [False]
             result_dic_list.append({"result": "没有添加断言,无断言用例标记失败，请添加断言判断用例", })
 
-        #with allure.step('断言：%s' % (False not in result_all)):
             Logger.info(self.re_sql_data)
             
             json.dumps(self.re_sql_data, ensure_ascii=False, indent=4),
@@ -132,7 +129,6 @@ class AssertApi():
                         data_sql_dic = {'message': "数据库查询失败！", "error": f"{e}"}
                     Logger.info(data_sql_dic)
                     Logger.info(type(data_sql_dic))
-                    # ExchangeData.extra_pool.update({"sql_%s_data"%n:data_sql_dic})
                     ExchangeData.get_extra_pool().update(data_sql_dic)  # 使用 get_extra_pool 方法
                     
                     self.re_sql_data.update({"sql_%s_data" % n: data_sql_dic})

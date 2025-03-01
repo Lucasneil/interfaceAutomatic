@@ -1,7 +1,6 @@
 from common.logger import Logger
 import pytest
 from common.exchange_data import ExchangeData
-from _pytest.outcomes import Skipped
 
 
 class Condition():
